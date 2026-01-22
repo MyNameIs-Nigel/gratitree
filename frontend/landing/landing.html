@@ -1,0 +1,339 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>GratiTree — Grow Your Gratitude</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
+  <style>
+    :root{
+      --bg-start:#f1fff8;
+      --bg-end:#e7f3ff;
+      --ink:#102a26;
+      --muted:#4f6b66;
+      --primary:#2a8f6b;
+      --primary-strong:#197a58;
+      --accent:#7cc4a9;
+      --ring: rgba(42,143,107,0.25);
+      --card-bg: rgba(255,255,255,0.65);
+      --glass: rgba(255,255,255,0.5);
+      --shadow: 0 10px 30px rgba(16,42,38,0.15);
+    }
+    *{box-sizing:border-box}
+    html, body { margin:0; padding:0; font-family: 'Inter', system-ui, -apple-system, Segoe UI, Arial, sans-serif; color:var(--ink); background: radial-gradient(1200px 600px at 20% 0%, var(--bg-start), transparent), radial-gradient(1200px 600px at 80% 10%, var(--bg-end), transparent), linear-gradient(180deg, #fbfffd 0%, #f5fbff 100%); }
+    a { color: var(--primary); text-decoration: none; }
+    .container { max-width: 1100px; margin: 0 auto; padding: 24px; }
+
+    /* Nav */
+    header {
+      position: sticky; top: 0; backdrop-filter: blur(8px);
+      background: linear-gradient(to bottom, rgba(255,255,255,0.8), rgba(255,255,255,0.65));
+      border-bottom: 1px solid rgba(16,42,38,0.08);
+      z-index: 50;
+    }
+    .nav {
+      display:flex; align-items:center; justify-content:space-between;
+    }
+    .brand {
+      display:flex; align-items:center; gap:10px; font-weight:800; letter-spacing: 0.2px; color: var(--primary-strong);
+    }
+    .brand .logo {
+      width:34px; height:34px; border-radius: 8px;
+      background: conic-gradient(from 180deg, #5ac08f, #7bd5b2, #c8f1e2, #8ed0ff, #5ac08f);
+      position:relative; box-shadow: var(--shadow);
+      display:grid; place-items:center; color:white; font-weight:800;
+    }
+    .brand .logo::after{
+      content:"🌱"; filter: drop-shadow(0 2px 2px rgba(0,0,0,0.12));
+      transform: translateY(-1px);
+    }
+    .nav a.cta {
+      background: var(--primary);
+      color: white; padding: 10px 14px; border-radius: 10px; font-weight:600;
+      border: 1px solid rgba(0,0,0,0.05);
+      box-shadow: 0 6px 18px rgba(42,143,107,0.25);
+    }
+    .nav a.cta:hover{ background: var(--primary-strong); }
+
+    /* Hero */
+    .hero {
+      display:grid; grid-template-columns: 1.1fr 0.9fr; gap: 36px; align-items:center;
+      padding: 32px 0 14px;
+    }
+    @media (max-width: 900px){
+      .hero { grid-template-columns: 1fr; }
+    }
+    .headline {
+      font-size: clamp(28px, 5vw, 48px);
+      line-height: 1.05; margin: 6px 0 10px; letter-spacing: -0.02em;
+    }
+    .tagline {
+      color: var(--muted); font-size: clamp(16px, 2.2vw, 18px); line-height: 1.6;
+      margin-bottom: 16px;
+    }
+    .pill {
+      display:inline-flex; align-items:center; gap:8px; padding: 8px 12px;
+      border-radius: 999px; background: var(--glass); border:1px solid rgba(16,42,38,0.08);
+      box-shadow: var(--shadow);
+    }
+    .mission {
+      margin-top: 18px; background: var(--card-bg); border: 1px solid rgba(16,42,38,0.08);
+      border-radius: 16px; padding: 16px; backdrop-filter: blur(6px);
+    }
+    .mission h3 { margin: 0 0 8px; font-size: 18px; }
+    .mission p { margin:0; color: var(--muted); }
+
+    /* Demo card stack */
+    .demo {
+      background: var(--card-bg); border: 1px solid rgba(16,42,38,0.08); border-radius: 16px; padding: 18px;
+      box-shadow: var(--shadow); backdrop-filter: blur(6px);
+    }
+    .demo h3 { margin: 4px 0 12px; }
+    .controls {
+      display:flex; gap: 10px; margin-bottom: 12px;
+    }
+    .controls input[type="text"]{
+      flex:1; padding:12px 14px; border-radius:12px; border:1px solid rgba(16,42,38,0.15);
+      outline:none; font-size:15px; background: white;
+    }
+    .controls input[type="text"]:focus{ border-color: var(--primary); box-shadow: 0 0 0 4px var(--ring); }
+    .controls button {
+      padding: 12px 14px; border-radius: 12px; border: 1px solid rgba(0,0,0,0.08);
+      background: var(--primary); color: white; font-weight:600; cursor:pointer;
+      box-shadow: 0 8px 16px rgba(42,143,107,0.25);
+    }
+    .controls button:hover{ background: var(--primary-strong); }
+
+    .frame {
+      --w: 420px; --h: 260px;
+      width: var(--w); height: var(--h);
+      border-radius: 16px; border: 1px dashed rgba(16,42,38,0.25);
+      background: linear-gradient(180deg, rgba(255,255,255,0.75), rgba(255,255,255,0.55));
+      position: relative; overflow: hidden; margin: 8px auto 6px;
+      display: grid; place-items: center; cursor: pointer;
+      transition: box-shadow 200ms ease;
+    }
+    .frame:hover{ box-shadow: 0 10px 28px rgba(0,0,0,0.08), inset 0 0 0 1px rgba(16,42,38,0.05); }
+    .frame .hint {
+      position: absolute; bottom: 6px; left: 10px; font-size: 12px; color: var(--muted);
+      background: rgba(255,255,255,0.7); padding: 4px 8px; border-radius: 8px; border: 1px solid rgba(16,42,38,0.06);
+    }
+    .stack-card {
+      position: absolute; width: calc(var(--w) - 28px); height: calc(var(--h) - 28px);
+      border-radius: 14px; padding: 14px;
+      display: flex; align-items: center; justify-content: center; text-align: center;
+      color: #0d1b18; font-weight: 600;
+      border: 1px solid rgba(16,42,38,0.1);
+      box-shadow: 0 12px 28px rgba(0,0,0,0.12);
+      transition: transform 280ms cubic-bezier(.2,.8,.2,1), opacity 220ms ease, filter 220ms ease;
+      user-select: none;
+    }
+    .stack-card .text{
+      max-width: 90%; font-size: clamp(16px, 2.2vw, 20px); line-height: 1.35;
+      text-wrap: balance;
+    }
+    .meta {
+      display:flex; justify-content: space-between; align-items: center; color: var(--muted);
+      font-size: 13px; margin-top: 8px;
+    }
+
+    /* Footer */
+    footer {
+      margin-top: 34px; padding: 22px 0; color: var(--muted); font-size: 14px;
+      border-top: 1px solid rgba(16,42,38,0.08);
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="container nav">
+      <div class="brand">
+        <div class="logo" aria-hidden="true"></div>
+        <span>GratiTree</span>
+      </div>
+      <a href="#demo" class="cta">Try the Demo</a>
+    </div>
+  </header>
+
+  <main class="container">
+    <section class="hero">
+      <div>
+        <span class="pill">✨ New • Mindful by design</span>
+        <h1 class="headline">Grow your gratitude,<br/>one day and tree at a time.</h1>
+        <p class="tagline">
+          GratiTree turns your daily gratitude into living art. Each reflection becomes a “tree,”
+          growing a forest that mirrors your mindset—beautiful, meaningful, and uniquely yours.
+        </p>
+        <div class="mission" aria-labelledby="mission-title">
+          <h3 id="mission-title">Mission</h3>
+          <p>
+            To make gratitude a joyful, consistent habit by turning reflection into a playful,
+            visual ritual. We combine gentle prompts with calming design so your positive thoughts
+            take root and flourish.
+          </p>
+        </div>
+      </div>
+
+      <div id="demo" class="demo">
+        <h3>Interactive Demo (Prototype)</h3>
+        <p style="margin-top:0;color:var(--muted);">Add a thought. Watch it stack. Click the frame to cycle cards.</p>
+        <div class="controls">
+          <input id="noteInput" type="text" placeholder="Today I'm grateful for… (press Enter or click Add)" />
+          <button id="addBtn" type="button">Add</button>
+        </div>
+
+        <div class="frame" id="frame" aria-live="polite" title="Click to cycle cards">
+          <span class="hint">Click to cycle ⟳</span>
+          <!-- Cards are injected here -->
+        </div>
+        <div class="meta">
+          <span id="countLabel">0 cards</span>
+          <span>Temporary demo — no data is saved</span>
+        </div>
+      </div>
+    </section>
+
+    <section style="margin-top: 26px;">
+      <h3>Why GratiTree?</h3>
+      <p style="color:var(--muted); max-width: 72ch;">
+        Traditional journaling can feel like a chore. GratiTree reimagines it with gentle cues and
+        visual feedback that rewards consistency. The full app will include private accounts, mindful
+        prompts, a daily streak, and a generative forest that reflects your journey.
+      </p>
+    </section>
+  </main>
+
+  <footer>
+    <div class="container">
+      © <span id="year"></span> GratiTree — a mindful micro-practice. Made with 🌿
+    </div>
+  </footer>
+
+  <script>
+    // --- Tiny demo state (no backend) ---
+    const input = document.getElementById('noteInput');
+    const addBtn = document.getElementById('addBtn');
+    const frame = document.getElementById('frame');
+    const countLabel = document.getElementById('countLabel');
+
+    const cards = []; // [{el, text, color}]
+    const palette = [
+      ['#CFFAE1','#7AD9B9'],
+      ['#E6F7FF','#9FD7FF'],
+      ['#FFF2D9','#FFC98B'],
+      ['#F3E8FF','#D0B5FF'],
+      ['#FFE6EA','#FFB8C4'],
+      ['#E6FFE9','#A6F5BD']
+    ];
+
+    function randomPalette(){
+      const [soft, bold] = palette[Math.floor(Math.random() * palette.length)];
+      return {soft, bold};
+    }
+
+    function updateCount(){
+      countLabel.textContent = `${cards.length} ${cards.length === 1 ? 'card' : 'cards'}`;
+    }
+
+    function createCardElement(text, colors){
+      const card = document.createElement('div');
+      card.className = 'stack-card';
+      card.style.background = `linear-gradient(180deg, ${colors.soft}, ${colors.bold})`;
+      card.style.filter = 'saturate(1.05)';
+
+      // Content
+      const inner = document.createElement('div');
+      inner.className = 'text';
+      inner.textContent = text;
+      card.appendChild(inner);
+
+      // Start centered
+      card.style.transform = 'translateY(0) scale(1)';
+      card.style.opacity = '1';
+      card.style.zIndex = 1000;
+
+      return card;
+    }
+
+    function renderStack(){
+      // Clean frame and reattach in order so that first array element is "top"
+      frame.querySelectorAll('.stack-card').forEach(n => n.remove());
+
+      const visible = Math.min(cards.length, 5); // show top 5 in stack
+      // We want index 0 to be on top, others behind
+      for (let i = 0; i < cards.length; i++){
+        const { el } = cards[i];
+
+        if (i < visible){
+          // Stack offsets
+          const offset = i * 10;         // px down
+          const scale = 1 - i * 0.04;    // reduce size slightly
+          const opacity = 1 - i * 0.12;  // fade a little per layer
+
+          el.style.transform = `translateY(${offset}px) scale(${scale})`;
+          el.style.opacity = opacity.toString();
+          el.style.zIndex = (1000 - i).toString();
+
+          frame.appendChild(el);
+        } else {
+          // Hide items beyond visible stack
+          el.style.opacity = '0';
+          el.style.transform = 'translateY(40px) scale(0.8)';
+        }
+      }
+
+      updateCount();
+    }
+
+    function addCardFromInput(){
+      const text = input.value.trim();
+      if (!text) return;
+
+      const colors = randomPalette();
+      const el = createCardElement(text, colors);
+      // Place new card at TOP of stack (index 0)
+      cards.unshift({ el, text, colors });
+      renderStack();
+
+      input.value = '';
+      input.focus();
+    }
+
+    function cycleStack(){
+      if (cards.length <= 1) return;
+      // Move top (index 0) to bottom
+      const top = cards.shift();
+      cards.push(top);
+      renderStack();
+    }
+
+    // Event bindings
+    addBtn.addEventListener('click', addCardFromInput);
+    input.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter') {
+        e.preventDefault();
+        addCardFromInput();
+      }
+    });
+    frame.addEventListener('click', cycleStack);
+
+    // Footer year
+    document.getElementById('year').textContent = new Date().getFullYear();
+
+    // Seed a few example cards on first load
+    const samples = [
+      "Morning sunlight through the window",
+      "A friend who checked in",
+      "Finishing that tough task",
+    ];
+    samples.reverse().forEach(t => {
+      const colors = randomPalette();
+      const el = createCardElement(t, colors);
+      cards.unshift({ el, text: t, colors });
+    });
+    renderStack();
+  </script>
+</body>
+</html>
