@@ -9,7 +9,8 @@
     "rewrites": [
       {
         "source": "**",
-        "destination": "/index.html"
+        "destination": "/404.html",
+        "type": 404
       }
     ]
   }
