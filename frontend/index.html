@@ -1,89 +1,302 @@
 <!DOCTYPE html>
-<html>
-  <head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Welcome to Firebase Hosting</title>
-
-    <!-- update the version number as needed -->
-    <script defer src="/__/firebase/12.8.0/firebase-app-compat.js"></script>
-    <!-- include only the Firebase features as you need -->
-    <script defer src="/__/firebase/12.8.0/firebase-auth-compat.js"></script>
-    <script defer src="/__/firebase/12.8.0/firebase-database-compat.js"></script>
-    <script defer src="/__/firebase/12.8.0/firebase-firestore-compat.js"></script>
-    <script defer src="/__/firebase/12.8.0/firebase-functions-compat.js"></script>
-    <script defer src="/__/firebase/12.8.0/firebase-messaging-compat.js"></script>
-    <script defer src="/__/firebase/12.8.0/firebase-storage-compat.js"></script>
-    <script defer src="/__/firebase/12.8.0/firebase-analytics-compat.js"></script>
-    <script defer src="/__/firebase/12.8.0/firebase-remote-config-compat.js"></script>
-    <script defer src="/__/firebase/12.8.0/firebase-performance-compat.js"></script>
-    <!-- 
-      initialize the SDK after all desired features are loaded, set useEmulator to false
-      to avoid connecting the SDK to running emulators.
-    -->
-    <script defer src="/__/firebase/init.js?useEmulator=true"></script>
-
-    <style media="screen">
-      body { background: #ECEFF1; color: rgba(0,0,0,0.87); font-family: Roboto, Helvetica, Arial, sans-serif; margin: 0; padding: 0; }
-      #message { background: white; max-width: 360px; margin: 100px auto 16px; padding: 32px 24px; border-radius: 3px; }
-      #message h2 { color: #ffa100; font-weight: bold; font-size: 16px; margin: 0 0 8px; }
-      #message h1 { font-size: 22px; font-weight: 300; color: rgba(0,0,0,0.6); margin: 0 0 16px;}
-      #message p { line-height: 140%; margin: 16px 0 24px; font-size: 14px; }
-      #message a { display: block; text-align: center; background: #039be5; text-transform: uppercase; text-decoration: none; color: white; padding: 16px; border-radius: 4px; }
-      #message, #message a { box-shadow: 0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24); }
-      #load { color: rgba(0,0,0,0.4); text-align: center; font-size: 13px; }
-      @media (max-width: 600px) {
-        body, #message { margin-top: 0; background: white; box-shadow: none; }
-        body { border-top: 16px solid #ffa100; }
-      }
-    </style>
-  </head>
-  <body>
-    <div id="message">
-      <h2>Welcome</h2>
-      <h1>Firebase Hosting Setup Complete</h1>
-      <p>You're seeing this because you've successfully setup Firebase Hosting. Now it's time to go build something extraordinary!</p>
-      <a target="_blank" href="https://firebase.google.com/docs/hosting/">Open Hosting Documentation</a>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>GratiTree — Visualize Your Gratitude</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles/styles.css">
+</head>
+<body>
+  <header>
+    <div class="container nav" role="navigation" aria-label="Primary">
+      <a class="brand" href="#top" aria-label="GratiTree home">
+        <span class="logo" aria-hidden="true"></span>
+        <span>GratiTree</span>
+      </a>
+      <div class="nav-links">
+        <a href="#mission">Mission</a>
+        <a href="#team">Team</a>
+        <a href="#contact">Contact</a>
+        <a href="/signup" style="color: #efefef;" class="btn btn-primary" aria-label="Sign up">Sign Up</a>
+      </div>
     </div>
-    <p id="load">Firebase SDK Loading&hellip;</p>
+  </header>
 
-    <script>
-      document.addEventListener('DOMContentLoaded', function() {
-        const loadEl = document.querySelector('#load');
-        // // 🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥
-        // // The Firebase SDK is initialized and available here!
-        //
-        // firebase.auth().onAuthStateChanged(user => { });
-        // firebase.database().ref('/path/to/ref').on('value', snapshot => { });
-        // firebase.firestore().doc('/foo/bar').get().then(() => { });
-        // firebase.functions().httpsCallable('yourFunction')().then(() => { });
-        // firebase.messaging().requestPermission().then(() => { });
-        // firebase.storage().ref('/path/to/ref').getDownloadURL().then(() => { });
-        // firebase.analytics(); // call to activate
-        // firebase.analytics().logEvent('tutorial_completed');
-        // firebase.performance(); // call to activate
-        //
-        // // 🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥
+  <main id="top" class="container main">
 
-        try {
-          let app = firebase.app();
-          let features = [
-            'auth', 
-            'database', 
-            'firestore',
-            'functions',
-            'messaging', 
-            'storage', 
-            'analytics', 
-            'remoteConfig',
-            'performance',
-          ].filter(feature => typeof app[feature] === 'function');
-          loadEl.textContent = `Firebase SDK loaded with ${features.join(', ')}`;
-        } catch (e) {
-          console.error(e);
-          loadEl.textContent = 'Error loading the Firebase SDK, check the console.';
-        }
-      });
-    </script>
-  </body>
+    <!-- HERO (width constrained by container) -->
+    <section class="hero" aria-label="Hero">
+      <div>
+        <span class="pill">✨ New • Public gratitude trees that reset daily</span>
+        <h1 class="headline">Visualize your gratitude,<br/>one day, one tree at a time.</h1>
+        <p class="tagline">
+          GratiTree helps everyone grow a shared gratitude journal. Add up to <strong>3</strong> things you're grateful for each day.
+          Similar words become <strong>branches</strong>, and your message becomes a <strong>leaf</strong>—so the community can literally see what's uplifting us.
+        </p>
+        <div class="hero-actions">
+          <a class="btn btn-primary" href="#demo">Try the Demo</a>
+          <a class="btn btn-ghost" href="#mission">How it works</a>
+        </div>
+
+        <div class="hero-card" style="margin-top: 14px;">
+          <h3>Daily rhythm, mindful boundaries</h3>
+          <p>
+            Like and comment on today's leaves while the tree is open. At midnight, the tree is locked and a new one begins.
+            You can revisit and interact with trees up to <strong>7 days</strong> old.
+          </p>
+        </div>
+      </div>
+
+      <aside class="tree-visual" aria-label="Example gratitude tree visualization">
+        <div class="topbar">
+          <span class="badge">Example Tree</span>
+          <span class="mini">Tap leaves in the app to like/comment</span>
+        </div>
+        <div class="tree-stage" aria-hidden="true">
+          <div class="branch b1"></div>
+          <div class="branch b2" style="top: 86px;"></div>
+          <div class="branch b3"></div>
+          <div class="trunk"></div>
+
+          <div class="leaf l1">♡</div>
+          <div class="leaf blue l2">★</div>
+          <div class="leaf pink l3">♡</div>
+          <div class="leaf gold l4">★</div>
+          <div class="leaf l5">♡</div>
+
+          <div class="ground"></div>
+          <div class="overlay-note">Words cluster into branches • Notes become leaves</div>
+        </div>
+      </aside>
+    </section>
+
+    <!-- MISSION / HOW IT WORKS -->
+    <section id="mission" class="section" aria-label="Mission">
+      <h2>Our mission</h2>
+      <p class="lead">
+        We're GratiTree—an organization that wants to make gratitude visible and shareable. We believe positive reflection is more powerful
+        when it becomes a collective ritual: a public tree that grows from what people appreciate every day.
+      </p>
+
+      <div class="grid-3">
+        <div class="card">
+          <div class="step">
+            <div class="num">1</div>
+            <div>
+              <h3 style="margin:0 0 6px;">Add up to 3 gratitudes</h3>
+              <p>Each day, write up to three short entries that you're grateful for. Keep it simple—one line is enough.</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="step">
+            <div class="num">2</div>
+            <div>
+              <h3 style="margin:0 0 6px;">Branches form from similar words</h3>
+              <p>When multiple people mention related ideas, the tree “thickens” that branch—revealing shared themes.</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="step">
+            <div class="num">3</div>
+            <div>
+              <h3 style="margin:0 0 6px;">Your message becomes a leaf</h3>
+              <p>Every entry becomes a leaf you (and others) can like and comment on while the tree is open.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="grid-2" style="margin-top: 16px;">
+        <div class="card">
+          <h3>Community interaction</h3>
+          <p>
+            You can like and comment on leaves to encourage others.
+            Once midnight hits, the day's tree locks—preserving it as a snapshot of that day's gratitude.
+          </p>
+          <ul class="list">
+            <li>Tree is open during the day for new leaves, likes, and comments</li>
+            <li>At midnight, it locks and a new tree starts</li>
+            <li>Previous trees remain visible for reflection</li>
+          </ul>
+        </div>
+
+        <div class="card">
+          <h3>7-day window</h3>
+          <p>
+            You can revisit and interact with trees up to 7 days old (like/comment). This keeps the space present-focused,
+            while still allowing meaningful follow-ups.
+          </p>
+          <ul class="list">
+            <li>Browse daily trees in a timeline</li>
+            <li>Like/comment on trees up to 7 days old</li>
+            <li>Older trees remain readable (optional, based on your product decisions)</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <!-- DEMO -->
+    <section id="demo" class="section" aria-label="Demo">
+      <h2>Interactive Demo</h2>
+      <p class="lead">
+        This is a lightweight interaction demo (no backend). Add a gratitude note to see it appear as a card.
+        Click the frame to cycle through recent notes—similar to browsing leaves.
+      </p>
+
+      <div class="demo">
+        <h3>Prototype Demo</h3>
+        <p style="margin-top:0; color: var(--muted);">Type a gratitude and press Enter (or click Add). Click the frame to cycle cards.</p>
+
+        <div class="controls">
+          <input id="noteInput" type="text" placeholder="Today I'm grateful for… (press Enter or click Add)" autocomplete="off" />
+          <button id="addBtn" type="button">Add</button>
+        </div>
+
+        <div class="frame" id="frame" aria-live="polite" title="Click to cycle cards">
+          <span class="hint">Click to cycle ⟳</span>
+          <!-- Cards injected here -->
+        </div>
+
+        <div class="meta">
+          <span id="countLabel">0 cards</span>
+          <span>Temporary demo — no data is saved</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- TEAM -->
+    <section id="team" class="section" aria-label="Team">
+      <h2>Meet the team</h2>
+      <p class="lead">
+        We're a team of six building GratiTree with care—balancing playful visualization with healthy boundaries.
+      </p>
+
+      <div class="grid-3">
+        <div class="card team-card">
+          <div class="avatar">NS</div>
+          <div>
+            <h4>Nigel Smith</h4>
+            <p>Product & Cloud Manager</p>
+          </div>
+        </div>
+        <div class="card team-card">
+          <div class="avatar">CB</div>
+          <div>
+            <h4>Cashton Bone</h4>
+            <p>Project Manager</p>
+          </div>
+        </div>
+        <div class="card team-card">
+          <div class="avatar">ZW</div>
+          <div>
+            <h4>Zack Williams</h4>
+            <p>Tech Lead & Quality Manager</p>
+          </div>
+        </div>
+        <div class="card team-card">
+          <div class="avatar">ZG</div>
+          <div>
+            <h4>Zack Gray</h4>
+            <p>Backend Developer</p>
+          </div>
+        </div>
+        <div class="card team-card">
+          <div class="avatar">OM</div>
+          <div>
+            <h4>Owen Means</h4>
+            <p>UX Designer</p>
+          </div>
+        </div>
+        <div class="card team-card">
+          <div class="avatar">EJ</div>
+          <div>
+            <h4>Emily Jenkins</h4>
+            <p>SEO Specialist & Security</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- CONTACT + SOURCE CODE ACCESS -->
+    <section id="contact" class="section" aria-label="Contact">
+      <h2>Contact & source code access</h2>
+      <p class="lead">
+        Want to collaborate, request access, or contribute? Send a note, or head to the repository links.
+      </p>
+
+      <div class="grid-2">
+        <div class="card" aria-label="Contact form">
+          <h3>Contact</h3>
+          <p>Send us a message. (This demo form is front-end only—wire it to your backend or a form service.)</p>
+          <form onsubmit="event.preventDefault(); alert('Thanks! This demo form does not submit yet.');">
+            <label>
+              <div class="fine">Name</div>
+              <input type="text" name="name" placeholder="Your name" required>
+            </label>
+            <label>
+              <div class="fine">Email</div>
+              <input type="email" name="email" placeholder="you@example.com" required>
+            </label>
+            <label>
+              <div class="fine">Message</div>
+              <textarea name="message" placeholder="How can we help?" required></textarea>
+            </label>
+            <button class="btn btn-primary" type="submit">Send message</button>
+          </form>
+        </div>
+
+        <div class="card flex-vertical" aria-label="Source code access">
+          <div>
+            <h3>Source code</h3>
+            <p>
+              Add your links here (GitHub/GitLab), plus any contributor guidelines or access instructions.
+            </p>
+            <ul class="list">
+              <li><strong>Repository:</strong> <a href="https://github.com/MyNameIs-Nigel/gratitree" aria-label="Repository link">github.com/MyNameIs-Nigel/gratitree</a></li>
+              <li><strong>Issues:</strong> <a href="/docs/issues.html" aria-label="Issue tracker link">Report a bug / request a feature</a></li>
+              <li><strong>Docs:</strong> <a href="/docs/" aria-label="Documentation link">Architecture & API notes</a></li>
+            </ul>
+          </div>
+          <div class="card" style="margin-top: 12px; padding: 14px; margin-bottom: 20px;">
+            <h3 style="margin:0 0 6px;">Sign up for early access</h3>
+            <p style="margin:0;">Get notified when the full experience launches.</p>
+            <form id="signup" style="grid-template-columns: 1fr auto; align-items:center; margin-top: 10px;">
+              <input type="email" placeholder="Email address" required aria-label="Email address">
+              <button class="btn btn-primary" type="submit">Join</button>
+            </form>
+            <p class="fine" style="margin: 10px 0 0;">We'll never share your email. Unsubscribe anytime.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <footer>
+    <div class="container footer-grid">
+      <div>
+        <strong>GratiTree</strong> — Grow your gratitude in public, safely.
+        <div class="fine" style="margin-top: 8px;">
+          © <span id="year"></span> GratiTree • Deployed with Firebase 🌿
+        </div>
+      </div>
+      <div>
+        <div class="fine" style="margin-bottom: 8px;">Quick links</div>
+        <div style="display:flex; gap: 12px; flex-wrap: wrap;">
+          <a href="#mission">Mission</a>
+          <a href="#demo">Demo</a>
+          <a href="#team">Team</a>
+          <a href="#contact">Contact</a>
+        </div>
+      </div>
+    </div>
+  </footer>
+  <script src="js/landing.js" defer></script>
+</body>
 </html>

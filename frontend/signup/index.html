@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>404 — GratiTree</title>
+  <title>Under Construction — GratiTree</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
   <style>
@@ -93,10 +93,10 @@
       font-size: 13px;
     }
     .center{
-      min-height: calc(83vh - 84px);
+      min-height: calc(100vh - 84px);
       display:grid;
       place-items:center;
-      padding: 0;
+      padding: 28px 0 38px;
     }
     .wrap{ width: min(900px, 100%); display:grid; grid-template-columns: 1.1fr 0.9fr; gap: 16px; align-items: stretch; }
     @media (max-width: 900px){ .wrap{ grid-template-columns: 1fr; } }
@@ -157,6 +157,31 @@
       *{ scroll-behavior: auto !important; transition: none !important; }
     }
 
+    .progress{
+      height: 12px;
+      border-radius: 999px;
+      border: 1px solid rgba(16,42,38,0.12);
+      background: rgba(255,255,255,0.7);
+      overflow: hidden;
+      box-shadow: inset 0 2px 6px rgba(16,42,38,0.06);
+    }
+    .progress > div{
+      height: 100%;
+      width: 62%;
+      border-radius: 999px;
+      background: linear-gradient(90deg, var(--primary), rgba(159,215,255,0.95), rgba(255,201,139,0.95));
+      filter: saturate(1.1);
+    }
+    form{ display:grid; gap: 10px; margin-top: 12px; }
+    input{
+      padding: 12px 12px;
+      border-radius: 12px;
+      border: 1px solid rgba(16,42,38,0.16);
+      font: inherit;
+      outline:none;
+      background: #fff;
+    }
+    input:focus{ border-color: var(--primary); box-shadow: 0 0 0 4px var(--ring); }
   </style>
 </head>
 <body>
@@ -176,27 +201,50 @@
   <main class="container">
     <div class="center">
       <div class="wrap">
-        <section class="card" aria-label="404 message">
-          <span class="pill">404 • Page not found</span>
-          <h1 class="headline">This branch doesn't exist.</h1>
+        <section class="card" aria-label="Under construction message">
+          <span class="pill">🚧 Under construction</span>
+          <h1 class="headline">We’re growing this page.</h1>
           <p class="tagline">
-            The page you're looking for may have moved, been renamed, or never grew here in the first place.
-            Let's get you back to the tree.
+            This part of GratiTree is getting planted right now. While we build, you can still explore the demo and learn how daily gratitude
+            becomes branches and leaves.
           </p>
-          <div class="actions">
-            <a class="btn btn-primary" href="/">Back to Home</a>
-            <a class="btn btn-ghost" href="/demo">Try the Demo</a>
+
+          <div class="card" style="padding: 14px; margin-top: 10px;">
+            <div style="display:flex; justify-content:space-between; gap: 10px; align-items:center;">
+              <strong>Build progress</strong>
+              <span class="fine">~62% complete</span>
+            </div>
+            <div class="progress" style="margin-top: 10px;" aria-label="Progress">
+              <div aria-hidden="true"></div>
+            </div>
+            <div class="fine" style="margin-top: 10px; line-height:1.6;">
+              Next up: polishing interactions, repo docs, and the weekly archive experience.
+            </div>
           </div>
-          <p class="fine" style="margin-top: 12px;">Tip: Check the URL for typos, or use the navigation above.</p>
+
+          <div class="actions">
+            <a class="btn btn-primary" href="/signup">Sign Up</a>
+            <a class="btn btn-ghost" href="/">Back to Home</a>
+          </div>
+
+          <!-- <div class="card" style="margin-top: 12px; padding: 14px;">
+            <strong>Get notified</strong>
+            <div class="fine" style="margin-top: 6px;">Drop your email and we’ll ping you when this page goes live. (Demo only)</div>
+            <form id="notify">
+              <input type="email" required placeholder="Email address" aria-label="Email address" />
+              <button class="btn btn-primary" type="submit">Notify me</button>
+            </form>
+            <div class="fine" style="margin-top: 10px;">We’ll never share your email. Unsubscribe anytime.</div>
+          </div> -->
         </section>
 
         <aside class="card" aria-label="Visual">
           <div class="status-graphic">
-            <div class="blob" aria-hidden="true"></div>
-            <div class="icon" aria-hidden="true">404</div>
+            <div class="blob" aria-hidden="true" style="transform: translateY(30px) scale(1.05);"></div>
+            <div class="icon" aria-hidden="true">🛠️</div>
             <div style="position:relative; z-index:2; margin-top: 12px;">
-              <div style="font-weight:800;">Lost leaf, found community.</div>
-              <div class="fine" style="margin-top: 6px;">GratiTree keeps growing—this page just isn't part of today's forest.</div>
+              <div style="font-weight:800;">Today’s tree is still open.</div>
+              <div class="fine" style="margin-top: 6px;">Add up to 3 gratitudes • Like & comment • Locks at midnight</div>
             </div>
           </div>
         </aside>
@@ -212,6 +260,14 @@
 
   <script>
     document.getElementById('year').textContent = new Date().getFullYear();
+    const form = document.getElementById('notify');
+    form.addEventListener('submit', (e) => {
+      e.preventDefault();
+      const email = form.querySelector('input[type="email"]').value.trim();
+      if (!email) return;
+      alert(`Thanks! We'll notify you (demo).\n\nEmail: ${email}`);
+      form.reset();
+    });
   </script>
 </body>
 </html>
