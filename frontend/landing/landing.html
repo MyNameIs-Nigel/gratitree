@@ -35,7 +35,7 @@
       z-index: 1000;
     }
 
-    /* Dropdown placeholder */
+    /* Dropdown menu */
     .menu select {
       padding: 0.4rem 0.6rem;
       font-size: 1rem;
@@ -165,11 +165,11 @@
   <!-- Header -->
   <header>
     <div class="menu">
-      <select disabled>
-        <option>Menu</option>
-        <option>Profile</option>
-        <option>My Tree</option>
-        <option>Settings</option>
+      <select id="navMenu">
+        <option value="#">Home</option>
+        <option value="demo.html">Demo</option>
+        <!-- <option value="#">Profile</option> -->
+        <!-- <option value="#">Settings</option> -->
       </select>
     </div>
 
@@ -218,6 +218,15 @@
 
     <button class="cta-btn">Make My Tree Today</button>
   </section>
+
+  <script>
+    // Simple navigation for dropdown menu
+    document.getElementById("navMenu").addEventListener("change", function () {
+      if (this.value) {
+        window.location.href = this.value;
+      }
+    });
+  </script>
 
 </body>
 </html>
