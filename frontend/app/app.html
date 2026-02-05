@@ -1,0 +1,51 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Firebase Tree Entries (POC)</title>
+  <style>
+    body { font-family: system-ui, Arial, sans-serif; max-width: 860px; margin: 2rem auto; padding: 0 1rem; }
+    form { display: grid; gap: .75rem; padding: 1rem; border: 1px solid #ddd; border-radius: 10px; }
+    input, textarea, button { font-size: 1rem; padding: .6rem; }
+    textarea { min-height: 90px; }
+    .row { display: grid; grid-template-columns: 1fr 1fr; gap: .75rem; }
+    .muted { color: #666; font-size: .9rem; }
+    ul { list-style: none; padding: 0; }
+    li { padding: .75rem 1rem; border: 1px solid #eee; border-radius: 10px; margin: .75rem 0; }
+    .meta { display: flex; gap: .75rem; flex-wrap: wrap; color: #555; font-size: .9rem; }
+    .error { color: #b00020; }
+  </style>
+</head>
+<body>
+  <h1>Tree Entries — Firebase POC</h1>
+  <p class="muted">Adds entries with fields: <code>tree</code> (string), <code>entry</code> (string), <code>date</code> (timestamp).</p>
+
+  <form id="entryForm">
+    <div class="row">
+      <div>
+        <label for="tree">Tree</label><br/>
+        <input id="tree" name="tree" placeholder="e.g., Oak-12" required />
+      </div>
+      <div>
+        <label for="limit">Show latest</label><br/>
+        <input id="limit" name="limit" type="number" min="1" max="100" value="20" />
+      </div>
+    </div>
+
+    <div>
+      <label for="entry">Entry</label><br/>
+      <textarea id="entry" name="entry" placeholder="Write your observation..." required></textarea>
+    </div>
+
+    <button type="submit">Add Entry</button>
+    <div id="status" class="muted"></div>
+    <div id="error" class="error"></div>
+  </form>
+
+  <h2>Latest Entries</h2>
+  <ul id="entriesList"></ul>
+
+  <script type="module" src="./app.js"></script>
+</body>
+</html>
