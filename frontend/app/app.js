@@ -90,7 +90,7 @@ function subscribeToLatest() {
   const n = Math.max(1, Math.min(100, Number(limitInput.value || 20)));
 
   const q = query(
-    collection(db, ENTRIES_COLLECTION),
+    collection(db, "gratitude"),
     orderBy("date", "desc"),
     limitQ(n)
   );
@@ -126,7 +126,7 @@ form.addEventListener("submit", async (e) => {
   }
 
   try {
-    await addDoc(collection(db, ENTRIES_COLLECTION), {
+    await addDoc(collection(db, "gratitude"), {
       tree,
       entry,
       // Firestore timestamp (set by server)
