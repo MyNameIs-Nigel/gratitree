@@ -1,0 +1,552 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>GratiTree — Visualize Your Gratitude</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
+  
+  <style>
+    /* --- CSS VARIABLES (From Landing A) --- */
+    :root {
+      --bg-start: #f1fff8;
+      --bg-end: #e7f3ff;
+      --ink: #102a26;
+      --muted: #4f6b66;
+      --primary: #2a8f6b;
+      --primary-hover: #197a58;
+      --card-bg: rgba(255, 255, 255, 0.75); /* Slightly more opaque for readability */
+      --glass: rgba(255, 255, 255, 0.6);
+      --shadow-soft: 0 10px 40px rgba(16, 42, 38, 0.08);
+      --border: 1px solid rgba(16, 42, 38, 0.08);
+      --radius: 20px;
+    }
+
+    /* --- RESET & BASE --- */
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    
+    html { scroll-behavior: smooth; }
+    
+    body {
+      font-family: 'Inter', sans-serif;
+      color: var(--ink);
+      line-height: 1.6;
+      /* The modern gradient background from Landing A, but lighter */
+      background:
+        radial-gradient(1000px 600px at 20% 0%, var(--bg-start), transparent),
+        radial-gradient(1000px 600px at 80% 10%, var(--bg-end), transparent),
+        linear-gradient(180deg, #fbfffd 0%, #f5fbff 100%);
+      background-attachment: fixed; /* Parallax feel */
+    }
+
+    a { text-decoration: none; color: inherit; transition: color 0.2s; }
+    ul { list-style: none; }
+
+    /* --- UTILITIES --- */
+    .container {
+      max-width: 1000px; /* Slightly narrower for focus */
+      margin: 0 auto;
+      padding: 0 24px;
+    }
+    
+    .btn {
+      display: inline-block;
+      padding: 12px 28px;
+      border-radius: 50px; /* Pill shape from Landing B */
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      border: none;
+      font-size: 1rem;
+    }
+
+    .btn-primary {
+      background: var(--primary);
+      color: white;
+      box-shadow: 0 4px 14px rgba(42, 143, 107, 0.3);
+    }
+
+    
+    .btn-primary:hover {
+      background: var(--primary-hover);
+      transform: translateY(-2px);
+    }
+
+    .btn-ghost {
+      background: rgba(255,255,255,0.8);
+      color: var(--primary);
+      border: 1px solid rgba(16, 42, 38, 0.1);
+    }
+    
+    .btn-ghost:hover { background: white; }
+
+    /* --- HEADER (Sticky like B, Content like A) --- */
+    header {
+      position: fixed;
+      top: 0;
+      width: 100%;
+      height: 70px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 2rem;
+      background: rgba(255, 255, 255, 0.85);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid rgba(0,0,0,0.05);
+      z-index: 1000;
+    }
+
+    .brand {
+      font-weight: 800;
+      font-size: 1.25rem;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      color: var(--primary);
+    }
+
+    .nav-links {
+      display: flex;
+      align-items: center;
+      gap: 24px;
+    }
+
+    .btn-primary a {font-size: 0.95rem; font-weight: 500;}
+
+    .nav-links a:not(.btn-primary) { font-size: 0.95rem; font-weight: 500; color: var(--muted); }
+    .nav-links a:hover:not(.btn-primary) { color: var(--primary); }
+    
+    @media (max-width: 768px) {
+      .nav-links { display: none; } /* Simplified mobile for now */
+    }
+
+    /* --- HERO SECTION (Layout of B, Content of A) --- */
+    .hero {
+      min-height: 90vh; /* Tall open feel */
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding-top: 80px; /* Offset for header */
+      position: relative;
+      background: 
+        linear-gradient(to bottom, rgba(255, 255, 255, 0), rgba(255, 255, 255, 0.4)),
+        url("../images/landing_bg.jpg") fixed;
+      background-size: 100%;
+      background-position: center;
+      background-repeat: no-repeat;
+
+      /* fixed no-repeat center */
+    }
+
+    .hero-content {
+        max-width: 700px;
+        z-index: 2;
+        padding: 50px 40px;
+        border-radius: 10px;
+        border: 2px solid rgba(76, 92, 83, 0.55);
+        background:
+        radial-gradient(1000px 600px at 20% 0%, var(--bg-start), transparent),
+        radial-gradient(1000px 600px at 80% 10%, var(--bg-end), transparent),
+        linear-gradient(180deg, #fbfffd 0%, #f5fbff 100%);
+    }
+
+    .pill {
+      display: inline-block;
+      padding: 6px 16px;
+      background: rgba(42, 143, 107, 0.1);
+      color: var(--primary);
+      border-radius: 20px;
+      font-size: 0.85rem;
+      font-weight: 600;
+      margin-bottom: 1rem;
+    }
+
+    .hero h1 {
+      font-size: clamp(2.5rem, 5vw, 4rem);
+      line-height: 1.1;
+      margin-bottom: 1.5rem;
+      color: var(--ink);
+      letter-spacing: -0.03em;
+    }
+
+    .hero p {
+      font-size: 1.25rem;
+      color: var(--muted);
+      margin-bottom: 2rem;
+      max-width: 600px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+
+    .hero-actions {
+      display: flex;
+      gap: 12px;
+      justify-content: center;
+    }
+
+    /* --- SECTIONS (Shared Styles) --- */
+    .section {
+      padding: 6rem 2rem; /* Big spacing like Landing B */
+      max-width: 1100px;
+      margin: 0 auto;
+    }
+
+    .section h2 {
+      font-size: 2.5rem;
+      text-align: center;
+      margin-bottom: 1rem;
+      color: var(--primary);
+    }
+
+    .lead {
+      text-align: center;
+      max-width: 700px;
+      margin: 0 auto 4rem;
+      color: var(--muted);
+      font-size: 1.1rem;
+    }
+
+    /* --- CARDS & GRID --- */
+    .grid-3 {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 24px;
+    }
+
+    .card {
+      background: var(--card-bg);
+      border: var(--border);
+      border-radius: var(--radius);
+      padding: 2rem;
+      box-shadow: var(--shadow-soft);
+      backdrop-filter: blur(5px);
+      transition: transform 0.2s;
+    }
+    
+    .card:hover { transform: translateY(-4px); }
+
+    .step-num {
+      width: 40px; height: 40px;
+      background: var(--primary);
+      color: white;
+      border-radius: 12px;
+      display: grid; place-items: center;
+      font-weight: 800;
+      margin-bottom: 1rem;
+      box-shadow: 0 8px 16px rgba(42, 143, 107, 0.2);
+    }
+
+    .card h3 { margin-bottom: 0.5rem; }
+    .card p { color: var(--muted); font-size: 0.95rem; }
+
+    /* --- DEMO SECTION --- */
+    .demo-section {
+      background: rgba(255,255,255,0.5);
+      border-radius: 30px;
+      margin: 4rem auto;
+      padding: 3rem;
+      max-width: 900px;
+      text-align: center;
+      border: 1px dashed rgba(16,42,38,0.15);
+    }
+
+    .demo-controls {
+      display: flex;
+      gap: 10px;
+      max-width: 500px;
+      margin: 0 auto 20px;
+    }
+
+    .demo-controls input {
+      flex: 1;
+      padding: 14px;
+      border-radius: 12px;
+      border: 1px solid #ccc;
+      font-size: 1rem;
+    }
+
+    .frame {
+      width: 100%;
+      height: 250px;
+      background: white;
+      border-radius: 20px;
+      box-shadow: inset 0 0 20px rgba(0,0,0,0.02);
+      border: 1px solid rgba(0,0,0,0.05);
+      display: grid;
+      place-items: center;
+      position: relative;
+      cursor: pointer;
+      overflow: hidden;
+    }
+
+    .stack-card {
+      padding: 2rem;
+      font-size: 1.2rem;
+      font-weight: 600;
+      text-align: center;
+      background: #fff;
+      border-radius: 16px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+      position: absolute;
+      max-width: 80%;
+    }
+
+    /* --- TEAM SECTION --- */
+    .team-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+      gap: 20px;
+    }
+    
+    .team-member {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 16px;
+      background: white;
+      border-radius: 16px;
+      border: 1px solid rgba(0,0,0,0.05);
+    }
+    
+    .avatar {
+      width: 40px; height: 40px;
+      background: #c8f1e2;
+      color: var(--primary);
+      border-radius: 50%;
+      display: grid; place-items: center;
+      font-weight: 700;
+      font-size: 0.8rem;
+    }
+
+    /* --- FOOTER --- */
+    footer {
+      text-align: center;
+      padding: 4rem 2rem;
+      color: var(--muted);
+      border-top: 1px solid rgba(0,0,0,0.05);
+      margin-top: 4rem;
+      background: rgba(255,255,255,0.4);
+    }
+    
+    .footer-links a { margin: 0 10px; font-weight: 600; }
+
+    /* Animation classes for demo JS */
+    .hidden { opacity: 0; pointer-events: none; }
+    
+  </style>
+</head>
+<body>
+
+  <header>
+    <a href="#" class="brand">
+      <span>🌱</span> GratiTree
+    </a>
+    <div class="nav-links">
+      <a href="#mission">How it works</a>
+      <a href="#demo">Demo</a>
+      <a href="#team">Team</a>
+      <a href="/signup" class="btn btn-primary" style="padding: 8px 20px; font-size: 0.9rem;">Sign Up</a>
+    </div>
+  </header>
+
+  <section class="hero">
+    <div class="hero-content">
+      <span class="pill">✨ New • Public gratitude trees that reset daily</span>
+      <h1>Visualize your gratitude,<br>one leaf at a time.</h1>
+      <p>
+        GratiTree helps everyone grow a shared gratitude journal. 
+        Add 3 things you're grateful for. Similar words become <strong>branches</strong>, 
+        and your message becomes a <strong>leaf</strong>.
+      </p>
+      <div class="hero-actions">
+        <a href="#demo" class="btn btn-primary">Try the Demo</a>
+        <a href="#mission" class="btn btn-ghost">Learn More</a>
+      </div>
+    </div>
+    
+    <div style="margin-top: 3rem; opacity: 0.8; transform: scale(0.9);">
+       <div style="font-size: 4rem; text-shadow: 0 20px 40px rgba(42,143,107,0.3);"><a style="background: white; padding: 15px 28px; border-radius: 100px;" href="#mission">↓</a></div>
+    </div>
+  </section>
+
+  <section id="mission" class="section">
+    <h2>How GratiTree Works</h2>
+    <p class="lead">
+      We believe positive reflection is more powerful when it becomes a collective ritual.
+      A public tree that grows from what people appreciate every day.
+    </p>
+
+    <div class="grid-3">
+      <div class="card">
+        <div class="step-num">1</div>
+        <h3>Add 3 Gratitudes</h3>
+        <p>Each day, write up to three short entries that you're grateful for. Keep it simple—one line is enough.</p>
+      </div>
+      <div class="card">
+        <div class="step-num">2</div>
+        <h3>Branches Form</h3>
+        <p>When multiple people mention related ideas, the tree “thickens” that branch—revealing shared themes.</p>
+      </div>
+      <div class="card">
+        <div class="step-num">3</div>
+        <h3>Leaves Grow</h3>
+        <p>Every entry becomes a leaf you (and others) can like and comment on while the tree is open.</p>
+      </div>
+    </div>
+  </section>
+
+  <section id="demo" class="section">
+    <div class="demo-section">
+      <h2>Interactive Demo</h2>
+      <p style="color: var(--muted); margin-bottom: 2rem;">
+        Type a gratitude note below to see it appear as a card. Click the frame to cycle through notes.
+      </p>
+
+      <div class="demo-controls">
+        <input id="noteInput" type="text" placeholder="Today I'm grateful for..." autocomplete="off">
+        <button id="addBtn" class="btn btn-primary">Add Leaf</button>
+      </div>
+
+      <div class="frame" id="frame" title="Click to cycle cards">
+        <span style="color: #aaa; font-size: 0.9rem;">(Added cards appear here)</span>
+      </div>
+      
+      <div style="margin-top: 1rem; font-size: 0.85rem; color: var(--muted);">
+        <span id="countLabel">0 cards</span> • Temporary demo (No data is saved)
+      </div>
+    </div>
+  </section>
+
+  <section id="team" class="section">
+    <h2>Meet the Team</h2>
+    <p class="lead">Building with care and healthy boundaries.</p>
+    
+    <div class="team-grid">
+      <div class="team-member">
+        <div class="avatar">NS</div>
+        <div><strong>Nigel Smith</strong><div style="font-size:0.8rem; color:var(--muted)">Product & Cloud</div></div>
+      </div>
+      <div class="team-member">
+        <div class="avatar">CB</div>
+        <div><strong>Cashton Bone</strong><div style="font-size:0.8rem; color:var(--muted)">Project Manager</div></div>
+      </div>
+      <div class="team-member">
+        <div class="avatar">ZW</div>
+        <div><strong>Zack Williams</strong><div style="font-size:0.8rem; color:var(--muted)">Tech Lead</div></div>
+      </div>
+      <div class="team-member">
+        <div class="avatar">ZG</div>
+        <div><strong>Zack Gray</strong><div style="font-size:0.8rem; color:var(--muted)">Backend Dev</div></div>
+      </div>
+      <div class="team-member">
+        <div class="avatar">OM</div>
+        <div><strong>Owen Means</strong><div style="font-size:0.8rem; color:var(--muted)">UX Designer</div></div>
+      </div>
+      <div class="team-member">
+        <div class="avatar">EJ</div>
+        <div><strong>Emily Jenkins</strong><div style="font-size:0.8rem; color:var(--muted)">SEO & Security</div></div>
+      </div>
+    </div>
+  </section>
+
+  <footer>
+    <div class="container">
+      <h3>GratiTree</h3>
+      <p style="margin-bottom: 1.5rem;">Grow your gratitude in public, safely.</p>
+      <div class="footer-links">
+        <a href="#mission">Mission</a>
+        <a href="#team">Team</a>
+        <a href="mailto:hello@gratitree.com">Contact</a>
+      </div>
+      <p style="font-size: 0.8rem; margin-top: 2rem; opacity: 0.7;">
+        © 2026 GratiTree • Deployed with Firebase
+      </p>
+    </div>
+  </footer>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const input = document.getElementById('noteInput');
+      const addBtn = document.getElementById('addBtn');
+      const frame = document.getElementById('frame');
+      const countLabel = document.getElementById('countLabel');
+      
+      let notes = [];
+      let currentIndex = 0;
+
+      // Add Note Function
+      function addNote() {
+        const text = input.value.trim();
+        if (!text) return;
+
+        notes.push(text);
+        input.value = '';
+        renderCard(text);
+        updateCount();
+      }
+
+      // Render the latest card on top
+      function renderCard(text) {
+        // Clear frame hint if it's the first note
+        if (notes.length === 1) frame.innerHTML = '';
+
+        const card = document.createElement('div');
+        card.className = 'stack-card';
+        card.textContent = text;
+        
+        // Random slight rotation for organic feel
+        const rotate = (Math.random() * 6 - 3).toFixed(1);
+        card.style.transform = `rotate(${rotate}deg) scale(0.9)`;
+        
+        // Animation in
+        card.style.opacity = '0';
+        frame.appendChild(card);
+        
+        // Trigger reflow
+        void card.offsetWidth; 
+        
+        card.style.transition = 'all 0.4s ease';
+        card.style.opacity = '1';
+        card.style.transform = `rotate(${rotate}deg) scale(1)`;
+        
+        // If multiple cards, hide previous ones visually or stack them?
+        // For simple demo, we just pile them. 
+      }
+
+      function updateCount() {
+        countLabel.textContent = `${notes.length} card${notes.length !== 1 ? 's' : ''}`;
+      }
+
+      // Cycle cards on click
+      frame.addEventListener('click', () => {
+        if (notes.length < 2) return;
+        
+        const cards = frame.querySelectorAll('.stack-card');
+        if (cards.length > 0) {
+          const topCard = cards[cards.length - 1];
+          
+          // Animate out
+          topCard.style.transform = 'translateY(20px) scale(0.95)';
+          topCard.style.opacity = '0';
+          
+          setTimeout(() => {
+            frame.prepend(topCard);
+            // Reset state
+            void topCard.offsetWidth;
+            topCard.style.transform = 'rotate(' + (Math.random() * 6 - 3) + 'deg)';
+            topCard.style.opacity = '1';
+          }, 300);
+        }
+      });
+
+      addBtn.addEventListener('click', addNote);
+      input.addEventListener('keypress', (e) => {
+        if (e.key === 'Enter') addNote();
+      });
+    });
+  </script>
+</body>
+</html>
