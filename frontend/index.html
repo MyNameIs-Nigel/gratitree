@@ -6,297 +6,550 @@
   <title>GratiTree — Visualize Your Gratitude</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="styles/styles.css">
+  
+  <style>
+    /* --- CSS VARIABLES (From Landing A) --- */
+    :root {
+      --bg-start: #f1fff8;
+      --bg-end: #e7f3ff;
+      --ink: #102a26;
+      --muted: #4f6b66;
+      --primary: #2a8f6b;
+      --primary-hover: #197a58;
+      --card-bg: rgba(255, 255, 255, 0.75); /* Slightly more opaque for readability */
+      --glass: rgba(255, 255, 255, 0.6);
+      --shadow-soft: 0 10px 40px rgba(16, 42, 38, 0.08);
+      --border: 1px solid rgba(16, 42, 38, 0.08);
+      --radius: 20px;
+    }
+
+    /* --- RESET & BASE --- */
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    
+    html { scroll-behavior: smooth; }
+    
+    body {
+      font-family: 'Inter', sans-serif;
+      color: var(--ink);
+      line-height: 1.6;
+      /* The modern gradient background from Landing A, but lighter */
+      background:
+        radial-gradient(1000px 600px at 20% 0%, var(--bg-start), transparent),
+        radial-gradient(1000px 600px at 80% 10%, var(--bg-end), transparent),
+        linear-gradient(180deg, #fbfffd 0%, #f5fbff 100%);
+      background-attachment: fixed; /* Parallax feel */
+    }
+
+    a { text-decoration: none; color: inherit; transition: color 0.2s; }
+    ul { list-style: none; }
+
+    /* --- UTILITIES --- */
+    .container {
+      max-width: 1000px; /* Slightly narrower for focus */
+      margin: 0 auto;
+      padding: 0 24px;
+    }
+    
+    .btn {
+      display: inline-block;
+      padding: 12px 28px;
+      border-radius: 50px; /* Pill shape from Landing B */
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      border: none;
+      font-size: 1rem;
+    }
+
+    .btn-primary {
+      background: var(--primary);
+      color: white;
+      box-shadow: 0 4px 14px rgba(42, 143, 107, 0.3);
+    }
+
+    
+    .btn-primary:hover {
+      background: var(--primary-hover);
+      transform: translateY(-2px);
+    }
+
+    .btn-ghost {
+      background: rgba(255,255,255,0.8);
+      color: var(--primary);
+      border: 1px solid rgba(16, 42, 38, 0.1);
+    }
+    
+    .btn-ghost:hover { background: white; }
+
+    /* --- HEADER (Sticky like B, Content like A) --- */
+    header {
+      position: fixed;
+      top: 0;
+      width: 100%;
+      height: 70px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 2rem;
+      background: rgba(255, 255, 255, 0.85);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid rgba(0,0,0,0.05);
+      z-index: 1000;
+    }
+
+    .brand {
+      font-weight: 800;
+      font-size: 1.25rem;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      color: var(--primary);
+    }
+
+    .nav-links {
+      display: flex;
+      align-items: center;
+      gap: 24px;
+    }
+
+    .btn-primary a {font-size: 0.95rem; font-weight: 500;}
+
+    .nav-links a:not(.btn-primary) { font-size: 0.95rem; font-weight: 500; color: var(--muted); }
+    .nav-links a:hover:not(.btn-primary) { color: var(--primary); }
+    
+    @media (max-width: 768px) {
+      .nav-links { display: none; } /* Simplified mobile for now */
+    }
+
+    /* --- HERO SECTION (Layout of B, Content of A) --- */
+    .hero {
+      min-height: 90vh; /* Tall open feel */
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding-top: 80px; /* Offset for header */
+      position: relative;
+      background: 
+        linear-gradient(to bottom, rgba(255, 255, 255, 0), rgba(255, 255, 255, 0.4)),
+        url("images/landing_bg.jpg") fixed;
+      background-size: 100%;
+      background-position: center;
+      background-repeat: no-repeat;
+
+      /* fixed no-repeat center */
+    }
+
+    .hero-content {
+        max-width: 700px;
+        z-index: 2;
+        padding: 50px 40px;
+        border-radius: 10px;
+        border: 2px solid rgba(76, 92, 83, 0.55);
+        background:
+        radial-gradient(1000px 600px at 20% 0%, var(--bg-start), transparent),
+        radial-gradient(1000px 600px at 80% 10%, var(--bg-end), transparent),
+        linear-gradient(180deg, #fbfffd 0%, #f5fbff 100%);
+    }
+
+    .pill {
+      display: inline-block;
+      padding: 6px 16px;
+      background: rgba(42, 143, 107, 0.1);
+      color: var(--primary);
+      border-radius: 20px;
+      font-size: 0.85rem;
+      font-weight: 600;
+      margin-bottom: 1rem;
+    }
+
+    .hero h1 {
+      font-size: clamp(2.5rem, 5vw, 4rem);
+      line-height: 1.1;
+      margin-bottom: 1.5rem;
+      color: var(--ink);
+      letter-spacing: -0.03em;
+    }
+
+    .hero p {
+      font-size: 1.25rem;
+      color: var(--muted);
+      margin-bottom: 2rem;
+      max-width: 600px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+
+    .hero-actions {
+      display: flex;
+      gap: 12px;
+      justify-content: center;
+    }
+
+    /* --- SECTIONS (Shared Styles) --- */
+    .section {
+      padding: 6rem 2rem; /* Big spacing like Landing B */
+      max-width: 1100px;
+      margin: 0 auto;
+    }
+
+    .section h2 {
+      font-size: 2.5rem;
+      text-align: center;
+      margin-bottom: 1rem;
+      color: var(--primary);
+    }
+
+    .lead {
+      text-align: center;
+      max-width: 700px;
+      margin: 0 auto 4rem;
+      color: var(--muted);
+      font-size: 1.1rem;
+    }
+
+    /* --- CARDS & GRID --- */
+    .grid-3 {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 24px;
+    }
+
+    .card {
+      background: var(--card-bg);
+      border: var(--border);
+      border-radius: var(--radius);
+      padding: 2rem;
+      box-shadow: var(--shadow-soft);
+      backdrop-filter: blur(5px);
+      transition: transform 0.2s;
+    }
+    
+    .card:hover { transform: translateY(-4px); }
+
+    .step-num {
+      width: 40px; height: 40px;
+      background: var(--primary);
+      color: white;
+      border-radius: 12px;
+      display: grid; place-items: center;
+      font-weight: 800;
+      margin-bottom: 1rem;
+      box-shadow: 0 8px 16px rgba(42, 143, 107, 0.2);
+    }
+
+    .card h3 { margin-bottom: 0.5rem; }
+    .card p { color: var(--muted); font-size: 0.95rem; }
+
+    /* --- DEMO SECTION --- */
+    .demo-section {
+      background: rgba(255,255,255,0.5);
+      border-radius: 30px;
+      margin: 4rem auto;
+      padding: 3rem;
+      max-width: 900px;
+      text-align: center;
+      border: 1px dashed rgba(16,42,38,0.15);
+    }
+
+    .demo-controls {
+      display: flex;
+      gap: 10px;
+      max-width: 500px;
+      margin: 0 auto 20px;
+    }
+
+    .demo-controls input {
+      flex: 1;
+      padding: 14px;
+      border-radius: 12px;
+      border: 1px solid #ccc;
+      font-size: 1rem;
+    }
+
+    .frame {
+      width: 100%;
+      height: 250px;
+      background: white;
+      border-radius: 20px;
+      box-shadow: inset 0 0 20px rgba(0,0,0,0.02);
+      border: 1px solid rgba(0,0,0,0.05);
+      display: grid;
+      place-items: center;
+      position: relative;
+      cursor: pointer;
+      overflow: hidden;
+    }
+
+    .stack-card {
+      padding: 2rem;
+      font-size: 1.2rem;
+      font-weight: 600;
+      text-align: center;
+      background: #fff;
+      border-radius: 16px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+      position: absolute;
+      max-width: 80%;
+    }
+
+    /* --- TEAM SECTION --- */
+    .team-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+      gap: 20px;
+    }
+    
+    .team-member {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 16px;
+      background: white;
+      border-radius: 16px;
+      border: 1px solid rgba(0,0,0,0.05);
+    }
+    
+    .avatar {
+      width: 40px; height: 40px;
+      background: #c8f1e2;
+      color: var(--primary);
+      border-radius: 50%;
+      display: grid; place-items: center;
+      font-weight: 700;
+      font-size: 0.8rem;
+    }
+
+    /* --- FOOTER --- */
+    footer {
+      text-align: center;
+      padding: 4rem 2rem;
+      color: var(--muted);
+      border-top: 1px solid rgba(0,0,0,0.05);
+      margin-top: 4rem;
+      background: rgba(255,255,255,0.4);
+    }
+    
+    .footer-links a { margin: 0 10px; font-weight: 600; }
+
+    /* Animation classes for demo JS */
+    .hidden { opacity: 0; pointer-events: none; }
+    .brand img {
+      width: 50px;
+    }
+    
+  </style>
 </head>
 <body>
+
   <header>
-    <div class="container nav" role="navigation" aria-label="Primary">
-      <a class="brand" href="#top" aria-label="GratiTree home">
-        <span class="logo" aria-hidden="true"></span>
-        <span>GratiTree</span>
-      </a>
-      <div class="nav-links">
-        <a href="#mission">Mission</a>
-        <a href="#team">Team</a>
-        <a href="#contact">Contact</a>
-        <a href="/signup" style="color: #efefef;" class="btn btn-primary" aria-label="Sign up">Sign Up</a>
-      </div>
+    <a href="#" class="brand">
+      <span><img src="images/logo.png"></span> GratiTree
+    </a>
+    <div class="nav-links">
+      <a href="#mission">How it works</a>
+      <a href="#demo">Demo</a>
+      <a href="#team">Team</a>
+      <a href="/signup" class="btn btn-primary" style="padding: 8px 20px; font-size: 0.9rem;">Sign Up</a>
     </div>
   </header>
 
-  <main id="top" class="container main">
-
-    <!-- HERO (width constrained by container) -->
-    <section class="hero" aria-label="Hero">
-      <div>
-        <span class="pill">✨ New • Public gratitude trees that reset daily</span>
-        <h1 class="headline">Visualize your gratitude,<br/>one day, one tree at a time.</h1>
-        <p class="tagline">
-          GratiTree helps everyone grow a shared gratitude journal. Add up to <strong>3</strong> things you're grateful for each day.
-          Similar words become <strong>branches</strong>, and your message becomes a <strong>leaf</strong>—so the community can literally see what's uplifting us.
-        </p>
-        <div class="hero-actions">
-          <a class="btn btn-primary" href="#demo">Try the Demo</a>
-          <a class="btn btn-ghost" href="#mission">How it works</a>
-        </div>
-
-        <div class="hero-card" style="margin-top: 14px;">
-          <h3>Daily rhythm, mindful boundaries</h3>
-          <p>
-            Like and comment on today's leaves while the tree is open. At midnight, the tree is locked and a new one begins.
-            You can revisit and interact with trees up to <strong>7 days</strong> old.
-          </p>
-        </div>
-      </div>
-
-      <aside class="tree-visual" aria-label="Example gratitude tree visualization">
-        <div class="topbar">
-          <span class="badge">Example Tree</span>
-          <span class="mini">Tap leaves in the app to like/comment</span>
-        </div>
-        <div class="tree-stage" aria-hidden="true">
-          <div class="branch b1"></div>
-          <div class="branch b2" style="top: 86px;"></div>
-          <div class="branch b3"></div>
-          <div class="trunk"></div>
-
-          <div class="leaf l1">♡</div>
-          <div class="leaf blue l2">★</div>
-          <div class="leaf pink l3">♡</div>
-          <div class="leaf gold l4">★</div>
-          <div class="leaf l5">♡</div>
-
-          <div class="ground"></div>
-          <div class="overlay-note">Words cluster into branches • Notes become leaves</div>
-        </div>
-      </aside>
-    </section>
-
-    <!-- MISSION / HOW IT WORKS -->
-    <section id="mission" class="section" aria-label="Mission">
-      <h2>Our mission</h2>
-      <p class="lead">
-        We're GratiTree—an organization that wants to make gratitude visible and shareable. We believe positive reflection is more powerful
-        when it becomes a collective ritual: a public tree that grows from what people appreciate every day.
+  <section class="hero">
+    <div class="hero-content">
+      <span class="pill">✨ New • Public gratitude trees that reset daily</span>
+      <h1>Visualize your gratitude,<br>one leaf at a time.</h1>
+      <p>
+        GratiTree helps everyone grow a shared gratitude journal. 
+        Add 3 things you're grateful for. Similar words become <strong>branches</strong>, 
+        and your message becomes a <strong>leaf</strong>.
       </p>
-
-      <div class="grid-3">
-        <div class="card">
-          <div class="step">
-            <div class="num">1</div>
-            <div>
-              <h3 style="margin:0 0 6px;">Add up to 3 gratitudes</h3>
-              <p>Each day, write up to three short entries that you're grateful for. Keep it simple—one line is enough.</p>
-            </div>
-          </div>
-        </div>
-
-        <div class="card">
-          <div class="step">
-            <div class="num">2</div>
-            <div>
-              <h3 style="margin:0 0 6px;">Branches form from similar words</h3>
-              <p>When multiple people mention related ideas, the tree “thickens” that branch—revealing shared themes.</p>
-            </div>
-          </div>
-        </div>
-
-        <div class="card">
-          <div class="step">
-            <div class="num">3</div>
-            <div>
-              <h3 style="margin:0 0 6px;">Your message becomes a leaf</h3>
-              <p>Every entry becomes a leaf you (and others) can like and comment on while the tree is open.</p>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <div class="grid-2" style="margin-top: 16px;">
-        <div class="card">
-          <h3>Community interaction</h3>
-          <p>
-            You can like and comment on leaves to encourage others.
-            Once midnight hits, the day's tree locks—preserving it as a snapshot of that day's gratitude.
-          </p>
-          <ul class="list">
-            <li>Tree is open during the day for new leaves, likes, and comments</li>
-            <li>At midnight, it locks and a new tree starts</li>
-            <li>Previous trees remain visible for reflection</li>
-          </ul>
-        </div>
-
-        <div class="card">
-          <h3>7-day window</h3>
-          <p>
-            You can revisit and interact with trees up to 7 days old (like/comment). This keeps the space present-focused,
-            while still allowing meaningful follow-ups.
-          </p>
-          <ul class="list">
-            <li>Browse daily trees in a timeline</li>
-            <li>Like/comment on trees up to 7 days old</li>
-            <li>Older trees remain readable (optional, based on your product decisions)</li>
-          </ul>
-        </div>
-      </div>
-    </section>
-
-    <!-- DEMO -->
-    <section id="demo" class="section" aria-label="Demo">
-      <h2>Interactive Demo</h2>
-      <p class="lead">
-        This is a lightweight interaction demo (no backend). Add a gratitude note to see it appear as a card.
-        Click the frame to cycle through recent notes—similar to browsing leaves.
-      </p>
-
-      <div class="demo">
-        <h3>Prototype Demo</h3>
-        <p style="margin-top:0; color: var(--muted);">Type a gratitude and press Enter (or click Add). Click the frame to cycle cards.</p>
-
-        <div class="controls">
-          <input id="noteInput" type="text" placeholder="Today I'm grateful for… (press Enter or click Add)" autocomplete="off" />
-          <button id="addBtn" type="button">Add</button>
-        </div>
-
-        <div class="frame" id="frame" aria-live="polite" title="Click to cycle cards">
-          <span class="hint">Click to cycle ⟳</span>
-          <!-- Cards injected here -->
-        </div>
-
-        <div class="meta">
-          <span id="countLabel">0 cards</span>
-          <span>Temporary demo — no data is saved</span>
-        </div>
-      </div>
-    </section>
-
-    <!-- TEAM -->
-    <section id="team" class="section" aria-label="Team">
-      <h2>Meet the team</h2>
-      <p class="lead">
-        We're a team of six building GratiTree with care—balancing playful visualization with healthy boundaries.
-      </p>
-
-      <div class="grid-3">
-        <div class="card team-card">
-          <div class="avatar">NS</div>
-          <div>
-            <h4>Nigel Smith</h4>
-            <p>Product & Cloud Manager</p>
-          </div>
-        </div>
-        <div class="card team-card">
-          <div class="avatar">CB</div>
-          <div>
-            <h4>Cashton Bone</h4>
-            <p>Project Manager</p>
-          </div>
-        </div>
-        <div class="card team-card">
-          <div class="avatar">ZW</div>
-          <div>
-            <h4>Zack Williams</h4>
-            <p>Tech Lead & Quality Manager</p>
-          </div>
-        </div>
-        <div class="card team-card">
-          <div class="avatar">ZG</div>
-          <div>
-            <h4>Zack Gray</h4>
-            <p>Backend Developer</p>
-          </div>
-        </div>
-        <div class="card team-card">
-          <div class="avatar">OM</div>
-          <div>
-            <h4>Owen Means</h4>
-            <p>UX Designer</p>
-          </div>
-        </div>
-        <div class="card team-card">
-          <div class="avatar">EJ</div>
-          <div>
-            <h4>Emily Jenkins</h4>
-            <p>SEO Specialist & Security</p>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <!-- CONTACT + SOURCE CODE ACCESS -->
-    <section id="contact" class="section" aria-label="Contact">
-      <h2>Contact & source code access</h2>
-      <p class="lead">
-        Want to collaborate, request access, or contribute? Send a note, or head to the repository links.
-      </p>
-
-      <div class="grid-2">
-        <div class="card" aria-label="Contact form">
-          <h3>Contact</h3>
-          <p>Send us a message. (This demo form is front-end only—wire it to your backend or a form service.)</p>
-          <form onsubmit="event.preventDefault(); alert('Thanks! This demo form does not submit yet.');">
-            <label>
-              <div class="fine">Name</div>
-              <input type="text" name="name" placeholder="Your name" required>
-            </label>
-            <label>
-              <div class="fine">Email</div>
-              <input type="email" name="email" placeholder="you@example.com" required>
-            </label>
-            <label>
-              <div class="fine">Message</div>
-              <textarea name="message" placeholder="How can we help?" required></textarea>
-            </label>
-            <button class="btn btn-primary" type="submit">Send message</button>
-          </form>
-        </div>
-
-        <div class="card flex-vertical" aria-label="Source code access">
-          <div>
-            <h3>Source code</h3>
-            <p>
-              Add your links here (GitHub/GitLab), plus any contributor guidelines or access instructions.
-            </p>
-            <ul class="list">
-              <li><strong>Repository:</strong> <a href="https://github.com/MyNameIs-Nigel/gratitree" aria-label="Repository link">github.com/MyNameIs-Nigel/gratitree</a></li>
-              <li><strong>Issues:</strong> <a href="/docs/issues.html" aria-label="Issue tracker link">Report a bug / request a feature</a></li>
-              <li><strong>Docs:</strong> <a href="/docs/" aria-label="Documentation link">Architecture & API notes</a></li>
-            </ul>
-          </div>
-          <div class="card" style="margin-top: 12px; padding: 14px; margin-bottom: 20px;">
-            <h3 style="margin:0 0 6px;">Sign up for early access</h3>
-            <p style="margin:0;">Get notified when the full experience launches.</p>
-            <form id="signup" style="grid-template-columns: 1fr auto; align-items:center; margin-top: 10px;">
-              <input type="email" placeholder="Email address" required aria-label="Email address">
-              <button class="btn btn-primary" type="submit">Join</button>
-            </form>
-            <p class="fine" style="margin: 10px 0 0;">We'll never share your email. Unsubscribe anytime.</p>
-          </div>
-        </div>
-      </div>
-    </section>
-
-  </main>
-
-  <footer>
-    <div class="container footer-grid">
-      <div>
-        <strong>GratiTree</strong> — Grow your gratitude in public, safely.
-        <div class="fine" style="margin-top: 8px;">
-          © <span id="year"></span> GratiTree • Deployed with Firebase 🌿
-        </div>
-      </div>
-      <div>
-        <div class="fine" style="margin-bottom: 8px;">Quick links</div>
-        <div style="display:flex; gap: 12px; flex-wrap: wrap;">
-          <a href="#mission">Mission</a>
-          <a href="#demo">Demo</a>
-          <a href="#team">Team</a>
-          <a href="#contact">Contact</a>
-        </div>
+      <div class="hero-actions">
+        <a href="#demo" class="btn btn-primary">Try the Demo</a>
+        <a href="#mission" class="btn btn-ghost">Learn More</a>
       </div>
     </div>
+    
+    <div style="margin-top: 3rem; opacity: 0.8; transform: scale(0.9);">
+       <div style="font-size: 4rem; text-shadow: 0 20px 40px rgba(42,143,107,0.3);"><a style="background: white; padding: 15px 28px; border-radius: 100px;" href="#mission">↓</a></div>
+    </div>
+  </section>
+
+  <section id="mission" class="section">
+    <h2>How GratiTree Works</h2>
+    <p class="lead">
+      We believe positive reflection is more powerful when it becomes a collective ritual.
+      A public tree that grows from what people appreciate every day.
+    </p>
+
+    <div class="grid-3">
+      <div class="card">
+        <div class="step-num">1</div>
+        <h3>Add 3 Gratitudes</h3>
+        <p>Each day, write up to three short entries that you're grateful for. Keep it simple—one line is enough.</p>
+      </div>
+      <div class="card">
+        <div class="step-num">2</div>
+        <h3>Branches Form</h3>
+        <p>When multiple people mention related ideas, the tree “thickens” that branch—revealing shared themes.</p>
+      </div>
+      <div class="card">
+        <div class="step-num">3</div>
+        <h3>Leaves Grow</h3>
+        <p>Every entry becomes a leaf you (and others) can like and comment on while the tree is open.</p>
+      </div>
+    </div>
+  </section>
+
+  <section id="demo" class="section">
+    <div class="demo-section">
+      <h2>Interactive Demo</h2>
+      <p style="color: var(--muted); margin-bottom: 2rem;">
+        Type a gratitude note below to see it appear as a card. Click the frame to cycle through notes.
+      </p>
+
+      <div class="demo-controls">
+        <input id="noteInput" type="text" placeholder="Today I'm grateful for..." autocomplete="off">
+        <button id="addBtn" class="btn btn-primary">Add Leaf</button>
+      </div>
+
+      <div class="frame" id="frame" title="Click to cycle cards">
+        <span style="color: #aaa; font-size: 0.9rem;">(Added cards appear here)</span>
+      </div>
+      
+      <div style="margin-top: 1rem; font-size: 0.85rem; color: var(--muted);">
+        <span id="countLabel">0 cards</span> • Temporary demo (No data is saved)
+      </div>
+    </div>
+  </section>
+
+  <section id="team" class="section">
+    <h2>Meet the Team</h2>
+    <p class="lead">Building with care and healthy boundaries.</p>
+    
+    <div class="team-grid">
+      <div class="team-member">
+        <div class="avatar">NS</div>
+        <div><strong>Nigel Smith</strong><div style="font-size:0.8rem; color:var(--muted)">Product & Cloud</div></div>
+      </div>
+      <div class="team-member">
+        <div class="avatar">CB</div>
+        <div><strong>Cashton Bone</strong><div style="font-size:0.8rem; color:var(--muted)">Project Manager</div></div>
+      </div>
+      <div class="team-member">
+        <div class="avatar">ZW</div>
+        <div><strong>Zack Williams</strong><div style="font-size:0.8rem; color:var(--muted)">Tech Lead</div></div>
+      </div>
+      <div class="team-member">
+        <div class="avatar">ZG</div>
+        <div><strong>Zack Gray</strong><div style="font-size:0.8rem; color:var(--muted)">Backend Dev</div></div>
+      </div>
+      <div class="team-member">
+        <div class="avatar">OM</div>
+        <div><strong>Owen Means</strong><div style="font-size:0.8rem; color:var(--muted)">UX Designer</div></div>
+      </div>
+      <div class="team-member">
+        <div class="avatar">EJ</div>
+        <div><strong>Emily Jenkins</strong><div style="font-size:0.8rem; color:var(--muted)">SEO & Security</div></div>
+      </div>
+    </div>
+  </section>
+
+  <footer>
+    <div class="container">
+      <h3>GratiTree</h3>
+      <p style="margin-bottom: 1.5rem;">Grow your gratitude in public, safely.</p>
+      <div class="footer-links">
+        <a href="#mission">Mission</a>
+        <a href="#team">Team</a>
+        <a href="mailto:hello@gratitree.com">Contact</a>
+      </div>
+      <p style="font-size: 0.8rem; margin-top: 2rem; opacity: 0.7;">
+        © 2026 GratiTree • Deployed with Firebase
+      </p>
+    </div>
   </footer>
-  <script src="js/landing.js" defer></script>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const input = document.getElementById('noteInput');
+      const addBtn = document.getElementById('addBtn');
+      const frame = document.getElementById('frame');
+      const countLabel = document.getElementById('countLabel');
+      
+      let notes = [];
+      let currentIndex = 0;
+
+      // Add Note Function
+      function addNote() {
+        const text = input.value.trim();
+        if (!text) return;
+
+        notes.push(text);
+        input.value = '';
+        renderCard(text);
+        updateCount();
+      }
+
+      // Render the latest card on top
+      function renderCard(text) {
+        // Clear frame hint if it's the first note
+        if (notes.length === 1) frame.innerHTML = '';
+
+        const card = document.createElement('div');
+        card.className = 'stack-card';
+        card.textContent = text;
+        
+        // Random slight rotation for organic feel
+        const rotate = (Math.random() * 6 - 3).toFixed(1);
+        card.style.transform = `rotate(${rotate}deg) scale(0.9)`;
+        
+        // Animation in
+        card.style.opacity = '0';
+        frame.appendChild(card);
+        
+        // Trigger reflow
+        void card.offsetWidth; 
+        
+        card.style.transition = 'all 0.4s ease';
+        card.style.opacity = '1';
+        card.style.transform = `rotate(${rotate}deg) scale(1)`;
+        
+        // If multiple cards, hide previous ones visually or stack them?
+        // For simple demo, we just pile them. 
+      }
+
+      function updateCount() {
+        countLabel.textContent = `${notes.length} card${notes.length !== 1 ? 's' : ''}`;
+      }
+
+      // Cycle cards on click
+      frame.addEventListener('click', () => {
+        if (notes.length < 2) return;
+        
+        const cards = frame.querySelectorAll('.stack-card');
+        if (cards.length > 0) {
+          const topCard = cards[cards.length - 1];
+          
+          // Animate out
+          topCard.style.transform = 'translateY(20px) scale(0.95)';
+          topCard.style.opacity = '0';
+          
+          setTimeout(() => {
+            frame.prepend(topCard);
+            // Reset state
+            void topCard.offsetWidth;
+            topCard.style.transform = 'rotate(' + (Math.random() * 6 - 3) + 'deg)';
+            topCard.style.opacity = '1';
+          }, 300);
+        }
+      });
+
+      addBtn.addEventListener('click', addNote);
+      input.addEventListener('keypress', (e) => {
+        if (e.key === 'Enter') addNote();
+      });
+    });
+  </script>
 </body>
 </html>
