@@ -3,270 +3,530 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Under Construction — GratiTree</title>
+  <title>GratiTree — Sign in</title>
+
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
-  <style>
 
-    :root{
-      --bg-start:#f1fff8;
-      --bg-end:#e7f3ff;
-      --ink:#102a26;
-      --muted:#4f6b66;
-      --primary:#2a8f6b;
-      --primary-strong:#197a58;
-      --accent:#7cc4a9;
-      --ring: rgba(42,143,107,0.25);
-      --card-bg: rgba(255,255,255,0.68);
-      --glass: rgba(255,255,255,0.55);
-      --shadow: 0 10px 30px rgba(16,42,38,0.15);
-      --shadow-soft: 0 10px 24px rgba(16,42,38,0.10);
-      --border: 1px solid rgba(16,42,38,0.10);
+  <style>
+    :root {
+      --bg-start: #f1fff8;
+      --bg-end: #e7f3ff;
+      --ink: #102a26;
+      --muted: #4f6b66;
+      --primary: #2a8f6b;
+      --primary-hover: #197a58;
+      --card-bg: rgba(255, 255, 255, 0.80);
+      --glass: rgba(255, 255, 255, 0.6);
+      --shadow-soft: 0 10px 40px rgba(16, 42, 38, 0.10);
+      --border: 1px solid rgba(16, 42, 38, 0.10);
+      --radius: 20px;
+      --danger: #b42318;
     }
-    *{box-sizing:border-box}
-    html, body {
-      margin:0;
-      padding:0;
-      font-family: 'Inter', system-ui, -apple-system, Segoe UI, Arial, sans-serif;
-      color:var(--ink);
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: 'Inter', sans-serif;
+      color: var(--ink);
+      line-height: 1.6;
       background:
-        radial-gradient(1200px 600px at 20% 0%, var(--bg-start), transparent),
-        radial-gradient(1200px 600px at 80% 10%, var(--bg-end), transparent),
+        radial-gradient(1000px 600px at 20% 0%, var(--bg-start), transparent),
+        radial-gradient(1000px 600px at 80% 10%, var(--bg-end), transparent),
         linear-gradient(180deg, #fbfffd 0%, #f5fbff 100%);
+      background-attachment: fixed;
       min-height: 100vh;
     }
-    a{ color: var(--primary); text-decoration:none; }
-    a:hover{ text-decoration: underline; }
-    .container{ max-width: 1100px; margin: 0 auto; padding: 24px; }
 
-    header{
-      position: sticky;
-      top:0;
-      z-index: 60;
-      backdrop-filter: blur(10px);
-      background: linear-gradient(to bottom, rgba(255,255,255,0.86), rgba(255,255,255,0.66));
-      border-bottom: 1px solid rgba(16,42,38,0.08);
+    a { text-decoration: none; color: inherit; }
+
+    header {
+      position: fixed;
+      top: 0;
+      width: 100%;
+      height: 70px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 2rem;
+      background: rgba(255, 255, 255, 0.85);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid rgba(0,0,0,0.05);
+      z-index: 1000;
     }
-    .nav{ display:flex; align-items:center; justify-content: space-between; gap: 14px; }
-    .brand{ display:flex; align-items:center; gap: 10px; font-weight: 800; color: var(--primary-strong); letter-spacing: 0.2px; }
-    .logo{
-      width: 34px; height: 34px; border-radius: 8px;
-      background: conic-gradient(from 180deg, #5ac08f, #7bd5b2, #c8f1e2, #8ed0ff, #5ac08f);
-      box-shadow: var(--shadow); display:grid; place-items:center;
+
+    .brand {
+      font-weight: 800;
+      font-size: 1.15rem;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      color: var(--primary);
     }
-    .logo::after{ content:"🌱"; filter: drop-shadow(0 2px 2px rgba(0,0,0,0.12)); transform: translateY(-1px); }
+    .brand img { width: 44px; height: auto; }
 
-    .nav-links{ display:flex; align-items:center; gap: 12px; flex-wrap: wrap; justify-content:flex-end; }
-    .nav-links a{ font-weight: 600; color: var(--ink); opacity: 0.85; }
-    .nav-links a:hover{ opacity: 1; }
-
-    .btn{
-      display:inline-flex; align-items:center; justify-content:center; gap: 8px;
-      padding: 10px 14px; border-radius: 12px; font-weight: 700;
-      border: 1px solid rgba(0,0,0,0.06);
-      box-shadow: 0 8px 18px rgba(42,143,107,0.22);
-      cursor:pointer; user-select:none;
-      text-decoration: none !important;
+    .nav-links {
+      display: flex;
+      align-items: center;
+      gap: 14px;
     }
-    .btn-primary{ background: var(--primary); color: #fff; }
-    .btn-primary:hover{ background: var(--primary-strong); }
-    .btn-ghost{ background: rgba(255,255,255,0.65); color: var(--ink); border: 1px solid rgba(16,42,38,0.12); box-shadow: var(--shadow-soft); }
-    .btn-ghost:hover{ filter: brightness(0.98); }
 
-    .card{
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      padding: 12px 18px;
+      border-radius: 999px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      border: none;
+      font-size: 0.95rem;
+      user-select: none;
+      white-space: nowrap;
+    }
+
+    .btn-primary {
+      background: var(--primary);
+      color: #fff;
+      box-shadow: 0 4px 14px rgba(42, 143, 107, 0.30);
+    }
+    .btn-primary:hover { background: var(--primary-hover); transform: translateY(-1px); }
+
+    .btn-ghost {
+      background: rgba(255,255,255,0.85);
+      color: var(--primary);
+      border: 1px solid rgba(16, 42, 38, 0.10);
+    }
+    .btn-ghost:hover { background: #fff; }
+
+    main {
+      padding-top: 92px;
+      padding-bottom: 64px;
+    }
+
+    .container {
+      max-width: 980px;
+      margin: 0 auto;
+      padding: 0 24px;
+    }
+
+    .shell {
+      display: grid;
+      grid-template-columns: 1.1fr 0.9fr;
+      gap: 24px;
+      align-items: start;
+      margin-top: 24px;
+    }
+
+    @media (max-width: 880px) {
+      .shell { grid-template-columns: 1fr; }
+      header { padding: 0 1rem; }
+    }
+
+    .card {
       background: var(--card-bg);
       border: var(--border);
-      border-radius: 18px;
-      padding: 18px;
-      box-shadow: var(--shadow);
+      border-radius: var(--radius);
+      padding: 26px;
+      box-shadow: var(--shadow-soft);
       backdrop-filter: blur(8px);
     }
-    .pill{
-      display:inline-flex; align-items:center; gap: 8px;
-      padding: 8px 12px; border-radius: 999px;
-      background: var(--glass);
-      border: 1px solid rgba(16,42,38,0.08);
-      box-shadow: var(--shadow);
-      width: fit-content;
+
+    .title {
+      font-size: clamp(1.8rem, 4vw, 2.35rem);
+      line-height: 1.15;
+      letter-spacing: -0.02em;
+      margin-bottom: 10px;
+    }
+
+    .subtitle { color: var(--muted); margin-bottom: 18px; }
+
+    .pill {
+      display: inline-block;
+      padding: 6px 14px;
+      background: rgba(42, 143, 107, 0.12);
+      color: var(--primary);
+      border-radius: 999px;
+      font-size: 0.82rem;
       font-weight: 700;
-      color: var(--primary-strong);
-      font-size: 13px;
+      margin-bottom: 14px;
     }
-    .center{
-      min-height: calc(100vh - 84px);
-      display:grid;
-      place-items:center;
-      padding: 28px 0 38px;
-    }
-    .wrap{ width: min(900px, 100%); display:grid; grid-template-columns: 1.1fr 0.9fr; gap: 16px; align-items: stretch; }
-    @media (max-width: 900px){ .wrap{ grid-template-columns: 1fr; } }
 
-    .headline{ font-size: clamp(28px, 5vw, 52px); line-height: 1.05; margin: 10px 0 10px; letter-spacing: -0.02em; }
-    .tagline{ color: var(--muted); font-size: clamp(16px, 2.1vw, 18px); line-height: 1.65; margin: 0 0 14px; }
-    .fine{ font-size: 12px; color: rgba(79,107,102,0.9); }
+    .divider { height: 1px; background: rgba(16,42,38,0.10); margin: 18px 0; }
 
-    .status-graphic{
-      position: relative;
-      border-radius: 16px;
-      border: 1px dashed rgba(16,42,38,0.22);
-      background: linear-gradient(180deg, rgba(255,255,255,0.78), rgba(255,255,255,0.58));
-      overflow: hidden;
-      min-height: 260px;
-      display:grid;
-      place-items:center;
-      text-align:center;
-      padding: 18px;
+    .user {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin: 12px 0 4px;
     }
-    .blob{
-      position:absolute;
-      inset:auto;
-      width: 260px;
-      height: 260px;
+
+    .avatar {
+      width: 42px;
+      height: 42px;
       border-radius: 999px;
-      opacity: 0.75;
-      background: radial-gradient(circle at 30% 30%, rgba(122,217,185,0.70), transparent 55%),
-                  radial-gradient(circle at 70% 35%, rgba(159,215,255,0.70), transparent 55%),
-                  radial-gradient(circle at 45% 70%, rgba(255,201,139,0.55), transparent 60%);
-      transform: translateY(40px);
+      background: #c8f1e2;
+      color: var(--primary);
+      display: grid;
+      place-items: center;
+      font-weight: 800;
+      overflow: hidden;
+      flex: 0 0 auto;
+      border: 1px solid rgba(0,0,0,0.05);
     }
-    .icon{
-      width: 64px;
-      height: 64px;
-      border-radius: 20px;
-      display:grid;
-      place-items:center;
-      background: conic-gradient(from 180deg, rgba(90,192,143,0.95), rgba(123,213,178,0.85), rgba(200,241,226,0.9), rgba(142,208,255,0.85), rgba(90,192,143,0.95));
-      box-shadow: var(--shadow);
-      border: 1px solid rgba(16,42,38,0.10);
-      position: relative;
-      z-index: 2;
-      color: rgba(255,255,255,0.98);
-      font-weight: 900;
-      font-size: 26px;
-    }
-    .actions{ display:flex; flex-wrap:wrap; gap: 10px; margin-top: 10px; }
+    .avatar img { width: 100%; height: 100%; object-fit: cover; }
 
-    footer{
-      padding: 22px 0;
+    .user-meta { display: grid; }
+    .user-meta strong { font-size: 0.98rem; }
+    .user-meta span { font-size: 0.85rem; color: var(--muted); }
+
+    .tree-list {
+      display: grid;
+      gap: 10px;
+      margin-top: 14px;
+    }
+
+    .tree-link {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 12px 14px;
+      border-radius: 14px;
+      background: rgba(255,255,255,0.9);
+      border: 1px solid rgba(16,42,38,0.08);
+      transition: transform 0.15s ease, box-shadow 0.15s ease;
+    }
+    .tree-link:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 12px 26px rgba(16, 42, 38, 0.08);
+    }
+    .tree-link small { color: var(--muted); font-weight: 600; }
+
+    .hint {
       color: var(--muted);
-      font-size: 14px;
-      border-top: 1px solid rgba(16,42,38,0.08);
+      font-size: 0.9rem;
+      margin-top: 10px;
     }
 
-    @media (prefers-reduced-motion: reduce){
-      *{ scroll-behavior: auto !important; transition: none !important; }
+    .status {
+      margin-top: 12px;
+      font-size: 0.9rem;
+      color: var(--muted);
     }
 
-    .progress{
-      height: 12px;
-      border-radius: 999px;
-      border: 1px solid rgba(16,42,38,0.12);
-      background: rgba(255,255,255,0.7);
-      overflow: hidden;
-      box-shadow: inset 0 2px 6px rgba(16,42,38,0.06);
+    .error {
+      margin-top: 12px;
+      padding: 10px 12px;
+      border-radius: 14px;
+      background: rgba(180, 35, 24, 0.08);
+      border: 1px solid rgba(180, 35, 24, 0.15);
+      color: var(--danger);
+      font-size: 0.9rem;
+      display: none;
     }
-    .progress > div{
-      height: 100%;
-      width: 62%;
-      border-radius: 999px;
-      background: linear-gradient(90deg, var(--primary), rgba(159,215,255,0.95), rgba(255,201,139,0.95));
-      filter: saturate(1.1);
+
+    .kicker {
+      font-weight: 800;
+      color: var(--primary);
+      margin-bottom: 8px;
     }
-    form{ display:grid; gap: 10px; margin-top: 12px; }
-    input{
-      padding: 12px 12px;
-      border-radius: 12px;
-      border: 1px solid rgba(16,42,38,0.16);
-      font: inherit;
-      outline:none;
-      background: #fff;
+
+    ul.checks { margin-top: 10px; padding-left: 18px; }
+    ul.checks li { margin: 8px 0; color: var(--muted); }
+
+    footer {
+      text-align: center;
+      padding: 24px 0 42px;
+      color: var(--muted);
+      font-size: 0.85rem;
+      opacity: 0.85;
     }
-    input:focus{ border-color: var(--primary); box-shadow: 0 0 0 4px var(--ring); }
+
+    .hidden { display: none !important; }
+
+    /* tiny google icon */
+    .gmark {
+      width: 18px;
+      height: 18px;
+      display: inline-block;
+      border-radius: 4px;
+      background:
+        conic-gradient(from 45deg, #4285F4 0 25%, #34A853 0 50%, #FBBC05 0 75%, #EA4335 0 100%);
+    }
   </style>
 </head>
+
 <body>
   <header>
-    <div class="container nav" role="navigation" aria-label="Primary">
-      <a class="brand" href="/" aria-label="GratiTree home">
-        <span class="logo" aria-hidden="true"></span>
-        <span>GratiTree</span>
-      </a>
-      <div class="nav-links">
-        <a href="/" class="btn btn-ghost">Home</a>
-        <a href="/signup" class="btn btn-primary" style="color: #efefef">Sign Up</a>
-      </div>
+    <a class="brand" href="/">
+      <span><img src="/images/logo.png" alt="GratiTree logo"></span> GratiTree
+    </a>
+    <div class="nav-links">
+      <a class="btn btn-ghost" href="/">Home</a>
+      <button id="signOutTop" class="btn btn-ghost hidden" type="button">Sign out</button>
     </div>
   </header>
 
-  <main class="container">
-    <div class="center">
-      <div class="wrap">
-        <section class="card" aria-label="Under construction message">
-          <span class="pill">🚧 Under construction</span>
-          <h1 class="headline">We’re growing this page.</h1>
-          <p class="tagline">
-            This part of GratiTree is getting planted right now. While we build, you can still explore the demo and learn how daily gratitude
-            becomes branches and leaves.
-          </p>
+  <main>
+    <div class="container">
+      <div class="card">
+        <span class="pill">🔒 Sign in required</span>
+        <h1 class="title">Welcome to your GratiTree dashboard</h1>
+        <p class="subtitle">Sign in with Google to add today’s leaves and browse recent trees.</p>
 
-          <div class="card" style="padding: 14px; margin-top: 10px;">
-            <div style="display:flex; justify-content:space-between; gap: 10px; align-items:center;">
-              <strong>Build progress</strong>
-              <span class="fine">~62% complete</span>
+        <div id="signedOutView">
+          <button id="googleBtn" class="btn btn-primary" type="button">
+            <span class="gmark" aria-hidden="true"></span>
+            Continue with Google
+          </button>
+          <p class="hint">We only use your Google sign-in to identify you and protect the tree from spam.</p>
+          <div class="error" id="authError"></div>
+        </div>
+
+        <div id="signedInView" class="hidden">
+          <div class="user">
+            <div class="avatar" id="avatar">
+              <span id="initials">GT</span>
             </div>
-            <div class="progress" style="margin-top: 10px;" aria-label="Progress">
-              <div aria-hidden="true"></div>
-            </div>
-            <div class="fine" style="margin-top: 10px; line-height:1.6;">
-              Next up: polishing interactions, repo docs, and the weekly archive experience.
-            </div>
-          </div>
-
-          <div class="actions">
-            <a class="btn btn-primary" href="/signup">Sign Up</a>
-            <a class="btn btn-ghost" href="/">Back to Home</a>
-          </div>
-
-          <!-- <div class="card" style="margin-top: 12px; padding: 14px;">
-            <strong>Get notified</strong>
-            <div class="fine" style="margin-top: 6px;">Drop your email and we’ll ping you when this page goes live. (Demo only)</div>
-            <form id="notify">
-              <input type="email" required placeholder="Email address" aria-label="Email address" />
-              <button class="btn btn-primary" type="submit">Notify me</button>
-            </form>
-            <div class="fine" style="margin-top: 10px;">We’ll never share your email. Unsubscribe anytime.</div>
-          </div> -->
-        </section>
-
-        <aside class="card" aria-label="Visual">
-          <div class="status-graphic">
-            <div class="blob" aria-hidden="true" style="transform: translateY(30px) scale(1.05);"></div>
-            <div class="icon" aria-hidden="true">🛠️</div>
-            <div style="position:relative; z-index:2; margin-top: 12px;">
-              <div style="font-weight:800;">Today’s tree is still open.</div>
-              <div class="fine" style="margin-top: 6px;">Add up to 3 gratitudes • Like & comment • Locks at midnight</div>
+            <div class="user-meta">
+              <strong id="displayName">Signed in</strong>
+              <span id="email">—</span>
             </div>
           </div>
-        </aside>
+
+          <div class="divider"></div>
+
+          <div class="shell">
+            <section class="card" style="padding: 20px;">
+              <div class="kicker">Your trees</div>
+              <div class="tree-list" id="treeList">
+                <!-- links injected by JS -->
+              </div>
+              <div class="status" id="status">Ready.</div>
+            </section>
+
+            <aside class="card" style="padding: 20px;">
+              <div class="kicker">How it works</div>
+              <ul class="checks">
+                <li>Post up to <strong>3</strong> gratitudes per day.</li>
+                <li>At day’s end, that tree locks and becomes read-only.</li>
+                <li>We keep the most recent <strong>6</strong> trees (today + previous 5).</li>
+              </ul>
+              <div class="divider"></div>
+              <button id="signOut" class="btn btn-ghost" type="button">Sign out</button>
+            </aside>
+          </div>
+
+          <div class="error" id="dashError"></div>
+        </div>
       </div>
+
+      <footer>© 2026 GratiTree • Deployed with Firebase</footer>
     </div>
   </main>
 
-  <footer>
-    <div class="container">
-      © <span id="year"></span> GratiTree — Made with 🌿
-    </div>
-  </footer>
+  <script type="module">
+    import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.8.1/firebase-app.js';
+    import {
+      getAuth,
+      GoogleAuthProvider,
+      signInWithPopup,
+      signOut,
+      onAuthStateChanged
+    } from 'https://www.gstatic.com/firebasejs/10.8.1/firebase-auth.js';
 
-  <script>
-    document.getElementById('year').textContent = new Date().getFullYear();
-    const form = document.getElementById('notify');
-    form.addEventListener('submit', (e) => {
-      e.preventDefault();
-      const email = form.querySelector('input[type="email"]').value.trim();
-      if (!email) return;
-      alert(`Thanks! We'll notify you (demo).\n\nEmail: ${email}`);
-      form.reset();
+    // Firestore is intentionally not imported until after login.
+
+    // Paste your config from Firebase Console → Project settings → Your apps → Web app
+    const firebaseConfig = {
+      apiKey: "REPLACE_ME",
+      authDomain: "REPLACE_ME",
+      projectId: "REPLACE_ME",
+      appId: "REPLACE_ME",
+      // storageBucket: "REPLACE_ME",
+      // messagingSenderId: "REPLACE_ME",
+      // measurementId: "REPLACE_ME"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+
+    const els = {
+      signedOutView: document.getElementById('signedOutView'),
+      signedInView: document.getElementById('signedInView'),
+      googleBtn: document.getElementById('googleBtn'),
+      signOut: document.getElementById('signOut'),
+      signOutTop: document.getElementById('signOutTop'),
+      authError: document.getElementById('authError'),
+      dashError: document.getElementById('dashError'),
+      avatar: document.getElementById('avatar'),
+      displayName: document.getElementById('displayName'),
+      email: document.getElementById('email'),
+      treeList: document.getElementById('treeList'),
+      status: document.getElementById('status'),
+    };
+
+    function show(el, on = true) { el.classList.toggle('hidden', !on); }
+    function setError(el, msg) {
+      el.style.display = msg ? 'block' : 'none';
+      el.textContent = msg || '';
+    }
+
+    // If you want a fixed timezone (e.g., Mountain Time), set TZ = 'America/Denver'.
+    // Otherwise it uses the user's local timezone.
+    const TZ = null; // e.g. 'America/Denver'
+
+    function formatDayKey(d) {
+      // returns YYYY-MM-DD
+      const parts = new Intl.DateTimeFormat('en-CA', {
+        timeZone: TZ || undefined,
+        year: 'numeric', month: '2-digit', day: '2-digit'
+      }).formatToParts(d);
+      const map = Object.fromEntries(parts.map(p => [p.type, p.value]));
+      return `${map.year}-${map.month}-${map.day}`;
+    }
+
+    function formatPretty(d) {
+      return new Intl.DateTimeFormat('en-US', {
+        timeZone: TZ || undefined,
+        weekday: 'short', month: 'short', day: 'numeric'
+      }).format(d);
+    }
+
+    function buildTreeLinks() {
+      const now = new Date();
+      const links = [];
+      for (let i = 0; i < 6; i++) {
+        const d = new Date(now);
+        d.setDate(now.getDate() - i);
+        const key = formatDayKey(d);
+        links.push({
+          label: i === 0 ? 'Today' : formatPretty(d),
+          key,
+          isToday: i === 0
+        });
+      }
+      return links;
+    }
+
+    function renderTreeLinks() {
+      const links = buildTreeLinks();
+      els.treeList.innerHTML = '';
+
+      // Assumes you have a /tree page that accepts ?day=YYYY-MM-DD
+      // Change these URLs to match your actual routing.
+      for (const t of links) {
+        const a = document.createElement('a');
+        a.className = 'tree-link';
+        a.href = t.isToday
+          ? `/tree/?day=${encodeURIComponent(t.key)}&mode=today`
+          : `/tree/?day=${encodeURIComponent(t.key)}`;
+
+        a.innerHTML = `
+          <div>
+            <div style="font-weight:800;">${t.label}</div>
+            <small>${t.key}</small>
+          </div>
+          <div style="font-weight:800;color:var(--primary);">→</div>
+        `;
+        els.treeList.appendChild(a);
+      }
+    }
+
+    async function ensureFirestoreAfterLogin() {
+      // Optional: If you later want to show dashboard info pulled from Firestore,
+      // lazily import Firestore ONLY after auth:
+      //
+      // const { getFirestore, doc, getDoc } =
+      //   await import('https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore.js');
+      // const db = getFirestore(app);
+      //
+      // ... fetch data here ...
+    }
+
+    els.googleBtn.addEventListener('click', async () => {
+      setError(els.authError, '');
+      try {
+        const provider = new GoogleAuthProvider();
+        provider.setCustomParameters({ prompt: 'select_account' });
+        await signInWithPopup(auth, provider);
+      } catch (e) {
+        console.error(e);
+        setError(els.authError, friendlyAuthError(e));
+      }
+    });
+
+    async function doSignOut() {
+      setError(els.dashError, '');
+      try {
+        await signOut(auth);
+      } catch (e) {
+        console.error(e);
+        setError(els.dashError, 'Could not sign out. Try again.');
+      }
+    }
+
+    els.signOut.addEventListener('click', doSignOut);
+    els.signOutTop.addEventListener('click', doSignOut);
+
+    function initialsFromName(nameOrEmail) {
+      const s = (nameOrEmail || '').trim();
+      if (!s) return 'GT';
+      const parts = s.split(/\s+/).filter(Boolean);
+      const init = parts.length >= 2 ? (parts[0][0] + parts[1][0]) : parts[0].slice(0,2);
+      return init.toUpperCase();
+    }
+
+    function setUserUI(user) {
+      els.displayName.textContent = user.displayName || 'Signed in';
+      els.email.textContent = user.email || '';
+
+      els.avatar.innerHTML = '';
+      if (user.photoURL) {
+        const img = document.createElement('img');
+        img.alt = 'User profile photo';
+        img.src = user.photoURL;
+        els.avatar.appendChild(img);
+      } else {
+        const span = document.createElement('span');
+        span.textContent = initialsFromName(user.displayName || user.email);
+        els.avatar.appendChild(span);
+      }
+    }
+
+    function friendlyAuthError(e) {
+      const code = e?.code || '';
+      if (code.includes('auth/popup-closed-by-user')) return 'Popup closed before completing sign-in.';
+      if (code.includes('auth/cancelled-popup-request')) return 'Another sign-in popup is already open.';
+      if (code.includes('auth/popup-blocked')) return 'Popup was blocked. Please allow popups and try again.';
+      if (code.includes('auth/unauthorized-domain'))
+        return 'This domain is not authorized in Firebase Auth. Add it in Firebase Console → Auth → Settings → Authorized domains.';
+      return 'Sign-in failed. Please try again.';
+    }
+
+    onAuthStateChanged(auth, async (user) => {
+      setError(els.authError, '');
+      setError(els.dashError, '');
+
+      if (!user) {
+        show(els.signedOutView, true);
+        show(els.signedInView, false);
+        show(els.signOutTop, false);
+        els.status.textContent = 'Ready.';
+        return;
+      }
+
+      show(els.signedOutView, false);
+      show(els.signedInView, true);
+      show(els.signOutTop, true);
+
+      setUserUI(user);
+      renderTreeLinks();
+      els.status.textContent = 'Signed in.';
+
+      // Lazily initialize Firestore only after authentication.
+      await ensureFirestoreAfterLogin();
     });
   </script>
 </body>
