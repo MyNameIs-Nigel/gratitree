@@ -1,0 +1,393 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>GratiTree — Tree</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
+
+  <style>
+    :root {
+      --bg-start: #f1fff8;
+      --bg-end: #e7f3ff;
+      --ink: #102a26;
+      --muted: #4f6b66;
+      --primary: #2a8f6b;
+      --primary-hover: #197a58;
+      --card-bg: rgba(255, 255, 255, 0.80);
+      --shadow-soft: 0 10px 40px rgba(16, 42, 38, 0.10);
+      --border: 1px solid rgba(16, 42, 38, 0.10);
+      --radius: 20px;
+      --danger: #b42318;
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: 'Inter', sans-serif;
+      color: var(--ink);
+      line-height: 1.6;
+      background:
+        radial-gradient(1000px 600px at 20% 0%, var(--bg-start), transparent),
+        radial-gradient(1000px 600px at 80% 10%, var(--bg-end), transparent),
+        linear-gradient(180deg, #fbfffd 0%, #f5fbff 100%);
+      background-attachment: fixed;
+      min-height: 100vh;
+    }
+
+    a { text-decoration: none; color: inherit; }
+
+    header {
+      position: fixed;
+      top: 0;
+      width: 100%;
+      height: 70px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 2rem;
+      background: rgba(255, 255, 255, 0.85);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid rgba(0,0,0,0.05);
+      z-index: 1000;
+    }
+
+    .brand {
+      font-weight: 800;
+      font-size: 1.15rem;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      color: var(--primary);
+    }
+    .brand img { width: 44px; height: auto; }
+
+    .nav-links { display: flex; align-items: center; gap: 14px; }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      padding: 12px 18px;
+      border-radius: 999px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      border: none;
+      font-size: 0.95rem;
+      user-select: none;
+      white-space: nowrap;
+    }
+    .btn-primary {
+      background: var(--primary);
+      color: #fff;
+      box-shadow: 0 4px 14px rgba(42, 143, 107, 0.30);
+    }
+    .btn-primary:hover { background: var(--primary-hover); transform: translateY(-1px); }
+    .btn-primary:disabled { opacity: 0.6; cursor: not-allowed; transform: none; }
+    .btn-ghost {
+      background: rgba(255,255,255,0.85);
+      color: var(--primary);
+      border: 1px solid rgba(16, 42, 38, 0.10);
+    }
+    .btn-ghost:hover { background: #fff; }
+
+    main { padding-top: 92px; padding-bottom: 64px; }
+
+    .container {
+      max-width: 900px;
+      margin: 0 auto;
+      padding: 0 24px;
+    }
+
+    .card {
+      background: var(--card-bg);
+      border: var(--border);
+      border-radius: var(--radius);
+      padding: 26px;
+      box-shadow: var(--shadow-soft);
+      backdrop-filter: blur(8px);
+      margin-bottom: 24px;
+    }
+
+    .title {
+      font-size: clamp(1.6rem, 3.5vw, 2rem);
+      line-height: 1.2;
+      letter-spacing: -0.02em;
+      margin-bottom: 8px;
+    }
+
+    .subtitle { color: var(--muted); font-size: 0.95rem; margin-bottom: 20px; }
+
+    .day-picker {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-bottom: 20px;
+    }
+
+    .day-btn {
+      padding: 8px 14px;
+      border-radius: 999px;
+      border: 1px solid rgba(16, 42, 38, 0.15);
+      background: rgba(255,255,255,0.9);
+      color: var(--ink);
+      font-size: 0.9rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.15s ease;
+    }
+    .day-btn:hover { background: #fff; border-color: var(--primary); color: var(--primary); }
+    .day-btn.active {
+      background: var(--primary);
+      color: #fff;
+      border-color: var(--primary);
+    }
+
+    /* Entry form */
+    .entry-form {
+      display: grid;
+      gap: 14px;
+      margin-bottom: 24px;
+    }
+
+    .entry-form label { font-weight: 600; font-size: 0.9rem; color: var(--ink); }
+
+    .entry-form textarea {
+      width: 100%;
+      min-height: 80px;
+      padding: 12px 14px;
+      border-radius: 14px;
+      border: 1px solid rgba(16, 42, 38, 0.15);
+      font-family: inherit;
+      font-size: 1rem;
+      resize: vertical;
+    }
+    .entry-form textarea:focus {
+      outline: none;
+      border-color: var(--primary);
+      box-shadow: 0 0 0 2px rgba(42, 143, 107, 0.2);
+    }
+
+    .char-count {
+      font-size: 0.85rem;
+      color: var(--muted);
+      text-align: right;
+    }
+    .char-count.at-limit { color: var(--danger); }
+
+    .form-row {
+      display: flex;
+      gap: 16px;
+      align-items: center;
+      flex-wrap: wrap;
+    }
+
+    .form-row input[type="text"] {
+      flex: 1;
+      min-width: 140px;
+      padding: 10px 14px;
+      border-radius: 14px;
+      border: 1px solid rgba(16, 42, 38, 0.15);
+      font-size: 0.95rem;
+    }
+
+    .checkbox-row {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 0.95rem;
+      color: var(--muted);
+    }
+    .checkbox-row input { width: 18px; height: 18px; cursor: pointer; }
+
+    .parent-select {
+      padding: 8px 12px;
+      border-radius: 12px;
+      border: 1px solid rgba(16, 42, 38, 0.15);
+      font-size: 0.9rem;
+      background: #fff;
+      min-width: 180px;
+    }
+
+    /* Tree display */
+    .tree-node {
+      margin-left: 0;
+      margin-bottom: 4px;
+    }
+
+    .tree-node-children {
+      margin-left: 24px;
+      border-left: 2px solid rgba(42, 143, 107, 0.2);
+      padding-left: 16px;
+      margin-top: 6px;
+    }
+
+    .tree-node-header {
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+      cursor: pointer;
+      padding: 10px 12px;
+      border-radius: 12px;
+      transition: background 0.15s ease;
+    }
+    .tree-node-header:hover { background: rgba(42, 143, 107, 0.06); }
+
+    .tree-node-toggle {
+      flex-shrink: 0;
+      width: 24px;
+      height: 24px;
+      border: none;
+      background: rgba(42, 143, 107, 0.15);
+      color: var(--primary);
+      border-radius: 6px;
+      font-size: 0.8rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: transform 0.2s ease;
+    }
+    .tree-node-toggle.collapsed { transform: rotate(-90deg); }
+    .tree-node-toggle.empty { background: rgba(16, 42, 38, 0.08); color: var(--muted); cursor: default; }
+
+    .tree-node-content {
+      flex: 1;
+      min-width: 0;
+    }
+
+    .tree-node-text { font-size: 1rem; line-height: 1.5; margin-bottom: 4px; }
+
+    .tree-node-meta {
+      font-size: 0.82rem;
+      color: var(--muted);
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    .locked-notice {
+      padding: 16px 20px;
+      background: rgba(42, 143, 107, 0.1);
+      border-radius: 14px;
+      color: var(--muted);
+      font-size: 0.95rem;
+      margin-bottom: 20px;
+    }
+
+    .open-notice {
+      padding: 16px 20px;
+      background: rgba(42, 143, 107, 0.08);
+      border-radius: 14px;
+      color: var(--muted);
+      font-size: 0.95rem;
+      margin-bottom: 20px;
+    }
+
+    .error {
+      padding: 12px 16px;
+      border-radius: 14px;
+      background: rgba(180, 35, 24, 0.08);
+      border: 1px solid rgba(180, 35, 24, 0.15);
+      color: var(--danger);
+      font-size: 0.9rem;
+      margin-bottom: 16px;
+      display: none;
+    }
+    .error.show { display: block; }
+
+    .empty-tree {
+      text-align: center;
+      padding: 48px 24px;
+      color: var(--muted);
+      font-size: 1rem;
+    }
+
+    .hidden { display: none !important; }
+
+    .loading { opacity: 0.7; pointer-events: none; }
+  </style>
+</head>
+<body>
+  <header>
+    <a class="brand" href="/signup/">
+      <span><img src="/images/logo.png" alt="GratiTree logo" onerror="this.style.display='none'"></span>
+      GratiTree
+    </a>
+    <div class="nav-links">
+      <a class="btn btn-ghost" href="/signup/">Dashboard</a>
+      <span id="userSpan" class="hidden" style="font-size:0.9rem;color:var(--muted);"></span>
+      <button id="signOutBtn" class="btn btn-ghost hidden" type="button">Sign out</button>
+    </div>
+  </header>
+
+  <main>
+    <div class="container">
+      <div id="signedOutView" class="card">
+        <h1 class="title">Sign in required</h1>
+        <p class="subtitle">Sign in with Google to view and add gratitudes to the tree.</p>
+        <a href="/signup/" class="btn btn-primary">Go to sign in</a>
+      </div>
+
+      <div id="signedInView" class="hidden">
+        <div class="card">
+          <h1 class="title" id="treeTitle">Today's gratitude tree</h1>
+          <p class="subtitle" id="treeSubtitle"></p>
+
+          <div class="day-picker" id="dayPicker"></div>
+
+          <div id="openNotice" class="open-notice hidden">
+            The tree is still open for new entries until noon Mountain time. Your gratitudes will appear when the tree locks.
+          </div>
+
+          <div id="lockedNotice" class="locked-notice hidden">
+            This tree is locked. No new entries can be added after noon Mountain time.
+          </div>
+
+          <div id="entryFormSection" class="hidden">
+            <form id="entryForm" class="entry-form">
+              <div>
+                <label for="entryText">Your gratitude (max 120 characters)</label>
+                <textarea id="entryText" maxlength="120" placeholder="I'm grateful for…" required></textarea>
+                <div class="char-count" id="charCount">0 / 120</div>
+              </div>
+              <div class="form-row">
+                <div>
+                  <label for="entryName">Display name (optional)</label>
+                  <input type="text" id="entryName" placeholder="Your name" maxlength="60" />
+                </div>
+                <div class="checkbox-row" style="align-self:flex-end;">
+                  <input type="checkbox" id="entryAnonymous" />
+                  <label for="entryAnonymous">Post anonymously</label>
+                </div>
+              </div>
+              <div class="form-row">
+                <label for="parentSelect">Reply to (optional)</label>
+                <select id="parentSelect" class="parent-select">
+                  <option value="">— New root entry —</option>
+                </select>
+              </div>
+              <div id="limitNotice" class="error">
+                You've reached the limit of 3 entries for today. The tree will be visible after noon Mountain time.
+              </div>
+              <button type="submit" class="btn btn-primary" id="submitBtn">Add gratitude</button>
+            </form>
+          </div>
+
+          <div id="treeSection" class="hidden">
+            <div id="treeRoot"></div>
+            <div id="emptyTree" class="empty-tree hidden">No entries yet for this day.</div>
+          </div>
+
+          <div id="errorEl" class="error"></div>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <script type="module" src="./tree.js"></script>
+</body>
+</html>
