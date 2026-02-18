@@ -1,5 +1,5 @@
 // GratiTree — Tree view and entry form
-// Uses Firebase Auth + Firestore. Tree locks at 12pm Mountain time.
+// Uses Firebase Auth + Firestore. Tree locks at midnight Mountain time (start of next day).
 
 import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.8.1/firebase-app.js';
 import {
@@ -54,19 +54,20 @@ function formatDayKey(d) {
   return `${map.year}-${map.month}-${map.day}`;
 }
 
-function noonMountainOnDay(dayId) {
+// Midnight at the start of the *next* day in Mountain (when this day's tree locks)
+function midnightMountainAfterDay(dayId) {
   const [y, m, d] = dayId.split('-').map(Number);
-  // 19:00 UTC = 12:00 MST, 18:00 UTC = 12:00 MDT; start with MST and adjust
-  let utc = new Date(Date.UTC(y, m - 1, d, 19, 0, 0, 0));
+  // 07:00 UTC = midnight MST (next day), 06:00 UTC = midnight MDT; start with MST and adjust
+  let utc = new Date(Date.UTC(y, m - 1, d + 1, 7, 0, 0, 0));
   const hour = parseInt(
     utc.toLocaleString('en-US', { timeZone: TZ, hour: 'numeric', hour12: false }),
     10
   );
-  return new Date(utc.getTime() + (12 - hour) * 60 * 60 * 1000);
+  return new Date(utc.getTime() + (0 - hour) * 60 * 60 * 1000);
 }
 
 function isTreeOpen(dayId) {
-  return new Date() < noonMountainOnDay(dayId);
+  return new Date() < midnightMountainAfterDay(dayId);
 }
 
 function formatPretty(d) {
@@ -321,7 +322,7 @@ async function switchDay(dayId, user) {
   const opt = dayOpts.find((o) => o.key === dayId);
 
   els.treeTitle.textContent = opt?.label || dayId;
-  els.treeSubtitle.textContent = `${dayId} • ${open ? 'Accepting entries until noon Mountain' : 'Locked (read-only)'}`;
+  els.treeSubtitle.textContent = `${dayId} • ${open ? 'Accepting entries until midnight Mountain' : 'Locked (read-only)'}`;
 
   // Day picker
   els.dayPicker.innerHTML = '';
