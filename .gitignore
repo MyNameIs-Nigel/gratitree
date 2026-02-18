@@ -69,3 +69,6 @@ node_modules/
 .dataconnect
 
 rules.txt
+
+# Firebase service account (contains secrets)
+scripts/serviceAccountKey.json

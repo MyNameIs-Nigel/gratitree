@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>GratiTree — Admin</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
+
+  <style>
+    :root {
+      --ink: #102a26;
+      --muted: #4f6b66;
+      --primary: #2a8f6b;
+      --primary-hover: #197a58;
+      --danger: #b42318;
+      --card-bg: rgba(255, 255, 255, 0.80);
+      --border: 1px solid rgba(16, 42, 38, 0.10);
+      --radius: 20px;
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: 'Inter', sans-serif;
+      color: var(--ink);
+      line-height: 1.6;
+      background: linear-gradient(180deg, #fbfffd 0%, #f5fbff 100%);
+      min-height: 100vh;
+    }
+
+    .container {
+      max-width: 560px;
+      margin: 0 auto;
+      padding: 2rem 24px;
+    }
+
+    .card {
+      background: var(--card-bg);
+      border: var(--border);
+      border-radius: var(--radius);
+      padding: 26px;
+      margin-bottom: 24px;
+    }
+
+    h1 { font-size: 1.5rem; margin-bottom: 8px; }
+    .subtitle { color: var(--muted); font-size: 0.95rem; margin-bottom: 20px; }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      padding: 12px 18px;
+      border-radius: 999px;
+      font-weight: 600;
+      cursor: pointer;
+      border: none;
+      font-size: 0.95rem;
+      background: var(--primary);
+      color: #fff;
+    }
+    .btn:hover { background: var(--primary-hover); }
+    .btn:disabled { opacity: 0.6; cursor: not-allowed; }
+    .btn-ghost {
+      background: transparent;
+      color: var(--primary);
+      border: 1px solid var(--primary);
+      text-decoration: none;
+    }
+    .btn-ghost:hover { background: rgba(42, 143, 107, 0.1); }
+
+    .status { margin-top: 16px; font-size: 0.9rem; color: var(--muted); }
+    .error { color: var(--danger); margin-top: 12px; font-size: 0.9rem; }
+    .success { color: var(--primary); margin-top: 12px; font-size: 0.9rem; }
+
+    .hidden { display: none !important; }
+
+    ul { margin-top: 12px; padding-left: 20px; }
+    li { margin: 6px 0; color: var(--muted); font-size: 0.9rem; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="card">
+      <h1>Tree admin</h1>
+      <p class="subtitle">Create tree metadata docs for the next 7 days.</p>
+
+      <div id="signedOutView">
+        <p class="status">Sign in with Google to continue.</p>
+        <a href="/signup/" class="btn btn-ghost" style="margin-top:12px;">Go to sign in</a>
+      </div>
+
+      <div id="signedInView" class="hidden">
+        <div id="notAdminView" class="hidden">
+          <p class="error">You don't have admin access.</p>
+          <p class="status" style="margin-top:8px;">Run once: <code>node scripts/set-admin-claim.js &lt;YOUR_UID&gt;</code></p>
+          <p class="status">Your UID: <code id="userUid" style="word-break:break-all;"></code></p>
+        </div>
+
+        <div id="adminView" class="hidden">
+          <button id="createBtn" class="btn" type="button">Create tree docs for next 7 days</button>
+          <p id="createStatus" class="status"></p>
+          <p id="createError" class="error hidden"></p>
+        </div>
+      </div>
+    </div>
+
+    <a href="/tree/" class="btn btn-ghost">← Back to tree</a>
+  </div>
+
+  <script type="module" src="./admin.js"></script>
+</body>
+</html>
