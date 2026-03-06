@@ -1,0 +1,44 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    function signedIn() { return request.auth != null; }
+    function isOpen(dayId) {
+      let path = /databases/$(database)/documents/trees/$(dayId);
+      return exists(path) && request.time < get(path).data.openUntil;
+    }
+
+    // Tree metadata: publicly readable once locked; admin can create/update
+    match /trees/{dayId} {
+      allow read: if !isOpen(dayId);
+      allow create, update: if signedIn() && request.auth.token.admin == true;
+      allow delete: if false;
+    }
+
+    // Entries under a tree
+    match /trees/{dayId}/entries/{entryId} {
+
+      // Public read after lock; while open, signed-in users can read their own (for 3-per-day count)
+      allow get, list: if !isOpen(dayId)
+                       || (signedIn() && resource.data.uid == request.auth.uid);
+
+      // Writes: only while the tree is open, only authenticated users
+      allow create: if signedIn()
+                    && isOpen(dayId)
+                    && request.resource.data.uid == request.auth.uid
+                    && request.resource.data.text is string
+                    && request.resource.data.text.size() > 0
+                    && request.resource.data.text.size() <= 120
+                    && request.resource.data.anonymous is bool
+                    && (!request.resource.data.keys().hasAny(['name']) || request.resource.data.name is string)
+                    && (!request.resource.data.keys().hasAny(['parentId']) || request.resource.data.parentId == null || request.resource.data.parentId is string);
+
+      allow update, delete: if false;
+    }
+
+    // default deny
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
+}

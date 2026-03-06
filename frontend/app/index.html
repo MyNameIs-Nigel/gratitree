@@ -271,54 +271,51 @@
   <main>
     <div class="container">
       <div class="card">
-        <span class="pill">🔒 Sign in required</span>
-        <h1 class="title">Welcome to your GratiTree dashboard</h1>
-        <p class="subtitle">Sign in with Google to add today's leaves and browse recent trees.</p>
+        <h1 class="title">Welcome to GratiTree</h1>
+        <p class="subtitle">Browse recent trees or sign in to add your own gratitude entries.</p>
 
-        <div id="signedOutView">
-          <button id="googleBtn" class="btn btn-primary" type="button">
-            <span class="gmark" aria-hidden="true"></span>
-            Continue with Google
-          </button>
-          <p class="hint">We only use your Google sign-in to identify you and protect the tree from spam.</p>
-          <div class="error" id="authError"></div>
-        </div>
-
-        <div id="signedInView" class="hidden">
-          <div class="user">
-            <div class="avatar" id="avatar">
-              <span id="initials">GT</span>
+        <div class="shell">
+          <section class="card" style="padding: 20px;">
+            <div class="kicker">Browse trees</div>
+            <div class="tree-list" id="treeList">
+              <!-- links injected by JS -->
             </div>
-            <div class="user-meta">
-              <strong id="displayName">Signed in</strong>
-              <span id="email">—</span>
+          </section>
+
+          <aside class="card" style="padding: 20px;">
+            <div id="signedOutView">
+              <div class="kicker">Sign in to contribute</div>
+              <button id="googleBtn" class="btn btn-primary" type="button" style="margin-bottom:10px;">
+                <span class="gmark" aria-hidden="true"></span>
+                Continue with Google
+              </button>
+              <p class="hint">Sign in to add your gratitudes to today's tree.</p>
+              <div class="error" id="authError"></div>
             </div>
-          </div>
 
-          <div class="divider"></div>
-
-          <div class="shell">
-            <section class="card" style="padding: 20px;">
-              <div class="kicker">Your trees</div>
-              <div class="tree-list" id="treeList">
-                <!-- links injected by JS -->
+            <div id="signedInView" class="hidden">
+              <div class="user">
+                <div class="avatar" id="avatar">
+                  <span id="initials">GT</span>
+                </div>
+                <div class="user-meta">
+                  <strong id="displayName">Signed in</strong>
+                  <span id="email">—</span>
+                </div>
               </div>
-              <div class="status" id="status">Ready.</div>
-            </section>
-
-            <aside class="card" style="padding: 20px;">
-              <div class="kicker">How it works</div>
-              <ul class="checks">
-                <li>Post up to <strong>3</strong> gratitudes per day.</li>
-                <li>At day's end, that tree locks and becomes read-only.</li>
-                <li>We keep the most recent <strong>6</strong> trees (today + previous 5).</li>
-              </ul>
               <div class="divider"></div>
               <button id="signOut" class="btn btn-ghost" type="button">Sign out</button>
-            </aside>
-          </div>
+              <div class="error" id="dashError"></div>
+            </div>
 
-          <div class="error" id="dashError"></div>
+            <div class="divider"></div>
+            <div class="kicker">How it works</div>
+            <ul class="checks">
+              <li>Post up to <strong>3</strong> gratitudes per day.</li>
+              <li>At day's end, that tree locks and becomes read-only.</li>
+              <li>We keep the most recent <strong>6</strong> trees (today + previous 5).</li>
+            </ul>
+          </aside>
         </div>
       </div>
 
@@ -360,7 +357,6 @@
       displayName: document.getElementById('displayName'),
       email: document.getElementById('email'),
       treeList: document.getElementById('treeList'),
-      status: document.getElementById('status'),
     };
 
     function show(el, on = true) { el.classList.toggle('hidden', !on); }
@@ -425,8 +421,7 @@
       }
     }
 
-    async function ensureFirestoreAfterLogin() {
-    }
+    renderTreeLinks();
 
     els.googleBtn.addEventListener('click', async () => {
       setError(els.authError, '');
@@ -490,13 +485,12 @@
 
     onAuthStateChanged(auth, async (user) => {
       setError(els.authError, '');
-      setError(els.dashError, '');
+      if (els.dashError) setError(els.dashError, '');
 
       if (!user) {
         show(els.signedOutView, true);
         show(els.signedInView, false);
         show(els.signOutTop, false);
-        els.status.textContent = 'Ready.';
         return;
       }
 
@@ -505,10 +499,6 @@
       show(els.signOutTop, true);
 
       setUserUI(user);
-      renderTreeLinks();
-      els.status.textContent = 'Signed in.';
-
-      await ensureFirestoreAfterLogin();
     });
   </script>
 </body>
