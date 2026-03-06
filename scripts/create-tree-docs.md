@@ -39,7 +39,7 @@ Use the admin page at `/tree/admin.html` to create tree docs for the next 7 days
    - Requires: `npm install firebase-admin`
    - Service account: place your Firebase service account key at `scripts/serviceAccountKey.json` (or set `GOOGLE_APPLICATION_CREDENTIALS`)
    - Get your UID from Firebase Console → Authentication → Users, or from the admin page when signed in (it shows your UID if you're not admin)
-2. Sign in at `/signup/`, then go to `/tree/admin.html`
+2. Sign in at `/app/`, then go to `/tree/admin.html`
 3. Click "Create tree docs for next 7 days"
 
 ## Automated creation (optional)

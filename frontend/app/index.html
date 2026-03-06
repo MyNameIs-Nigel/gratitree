@@ -246,7 +246,6 @@
 
     .hidden { display: none !important; }
 
-    /* tiny google icon */
     .gmark {
       width: 18px;
       height: 18px;
@@ -274,7 +273,7 @@
       <div class="card">
         <span class="pill">🔒 Sign in required</span>
         <h1 class="title">Welcome to your GratiTree dashboard</h1>
-        <p class="subtitle">Sign in with Google to add today’s leaves and browse recent trees.</p>
+        <p class="subtitle">Sign in with Google to add today's leaves and browse recent trees.</p>
 
         <div id="signedOutView">
           <button id="googleBtn" class="btn btn-primary" type="button">
@@ -311,7 +310,7 @@
               <div class="kicker">How it works</div>
               <ul class="checks">
                 <li>Post up to <strong>3</strong> gratitudes per day.</li>
-                <li>At day’s end, that tree locks and becomes read-only.</li>
+                <li>At day's end, that tree locks and becomes read-only.</li>
                 <li>We keep the most recent <strong>6</strong> trees (today + previous 5).</li>
               </ul>
               <div class="divider"></div>
@@ -337,9 +336,6 @@
       onAuthStateChanged
     } from 'https://www.gstatic.com/firebasejs/10.8.1/firebase-auth.js';
 
-    // Firestore is intentionally not imported until after login.
-
-    // Paste your config from Firebase Console → Project settings → Your apps → Web app
     const firebaseConfig = {
       apiKey: "AIzaSyAOksyrIIGh0ugEieJ1cK1B3Idl7qQyQyY",
       authDomain: "gratitree.firebaseapp.com",
@@ -373,12 +369,9 @@
       el.textContent = msg || '';
     }
 
-    // If you want a fixed timezone (e.g., Mountain Time), set TZ = 'America/Denver'.
-    // Otherwise it uses the user's local timezone.
-    const TZ = null; // e.g. 'America/Denver'
+    const TZ = null;
 
     function formatDayKey(d) {
-      // returns YYYY-MM-DD
       const parts = new Intl.DateTimeFormat('en-CA', {
         timeZone: TZ || undefined,
         year: 'numeric', month: '2-digit', day: '2-digit'
@@ -414,8 +407,6 @@
       const links = buildTreeLinks();
       els.treeList.innerHTML = '';
 
-      // Assumes you have a /tree page that accepts ?day=YYYY-MM-DD
-      // Change these URLs to match your actual routing.
       for (const t of links) {
         const a = document.createElement('a');
         a.className = 'tree-link';
@@ -435,14 +426,6 @@
     }
 
     async function ensureFirestoreAfterLogin() {
-      // Optional: If you later want to show dashboard info pulled from Firestore,
-      // lazily import Firestore ONLY after auth:
-      //
-      // const { getFirestore, doc, getDoc } =
-      //   await import('https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore.js');
-      // const db = getFirestore(app);
-      //
-      // ... fetch data here ...
     }
 
     els.googleBtn.addEventListener('click', async () => {
@@ -525,7 +508,6 @@
       renderTreeLinks();
       els.status.textContent = 'Signed in.';
 
-      // Lazily initialize Firestore only after authentication.
       await ensureFirestoreAfterLogin();
     });
   </script>
