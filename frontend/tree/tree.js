@@ -99,8 +99,7 @@ function buildDayOptions() {
 // ---------------------------------------------------------------------------
 
 const els = {
-  signedOutView: document.getElementById('signedOutView'),
-  signedInView: document.getElementById('signedInView'),
+  signInPrompt: document.getElementById('signInPrompt'),
   dayPicker: document.getElementById('dayPicker'),
   treeTitle: document.getElementById('treeTitle'),
   treeSubtitle: document.getElementById('treeSubtitle'),
@@ -338,12 +337,14 @@ async function switchDay(dayId, user) {
   if (open) {
     els.openNotice.classList.remove('hidden');
     els.lockedNotice.classList.add('hidden');
-    els.entryFormSection.classList.remove('hidden');
     els.treeSection.classList.add('hidden');
     unsubscribeEntries?.();
     unsubscribeEntries = null;
 
     if (user) {
+      els.entryFormSection.classList.remove('hidden');
+      els.signInPrompt.classList.add('hidden');
+
       const entriesRef = collection(db, 'trees', dayId, 'entries');
       const q = query(
         entriesRef,
@@ -366,11 +367,15 @@ async function switchDay(dayId, user) {
       });
 
       fillParentSelect(entries);
+    } else {
+      els.entryFormSection.classList.add('hidden');
+      els.signInPrompt.classList.remove('hidden');
     }
   } else {
     els.openNotice.classList.add('hidden');
     els.lockedNotice.classList.remove('hidden');
     els.entryFormSection.classList.add('hidden');
+    els.signInPrompt.classList.add('hidden');
     els.treeSection.classList.remove('hidden');
     subscribeToEntries(dayId);
   }
@@ -460,17 +465,14 @@ els.signOutBtn.addEventListener('click', async () => {
 });
 
 onAuthStateChanged(auth, (user) => {
-  if (!user) {
-    els.signedOutView.classList.remove('hidden');
-    els.signedInView.classList.add('hidden');
-    return;
+  if (user) {
+    els.userSpan.textContent = user.displayName || user.email || '';
+    els.userSpan.classList.remove('hidden');
+    els.signOutBtn.classList.remove('hidden');
+  } else {
+    els.userSpan.classList.add('hidden');
+    els.signOutBtn.classList.add('hidden');
   }
-
-  els.signedOutView.classList.add('hidden');
-  els.signedInView.classList.remove('hidden');
-  els.userSpan.textContent = user.displayName || user.email || '';
-  els.userSpan.classList.remove('hidden');
-  els.signOutBtn.classList.remove('hidden');
 
   const dayId = getDayFromUrl();
   switchDay(dayId, user);

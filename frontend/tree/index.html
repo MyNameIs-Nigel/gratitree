@@ -314,12 +314,12 @@
 </head>
 <body>
   <header>
-    <a class="brand" href="/signup/">
+    <a class="brand" href="/app/">
       <span><img src="/images/logo.png" alt="GratiTree logo" onerror="this.style.display='none'"></span>
       GratiTree
     </a>
     <div class="nav-links">
-      <a class="btn btn-ghost" href="/signup/">Dashboard</a>
+      <a class="btn btn-ghost" href="/app/">Dashboard</a>
       <span id="userSpan" class="hidden" style="font-size:0.9rem;color:var(--muted);"></span>
       <button id="signOutBtn" class="btn btn-ghost hidden" type="button">Sign out</button>
     </div>
@@ -327,64 +327,61 @@
 
   <main>
     <div class="container">
-      <div id="signedOutView" class="card">
-        <h1 class="title">Sign in required</h1>
-        <p class="subtitle">Sign in with Google to view and add gratitudes to the tree.</p>
-        <a href="/signup/" class="btn btn-primary">Go to sign in</a>
-      </div>
+      <div class="card">
+        <h1 class="title" id="treeTitle">Today's gratitude tree</h1>
+        <p class="subtitle" id="treeSubtitle"></p>
 
-      <div id="signedInView" class="hidden">
-        <div class="card">
-          <h1 class="title" id="treeTitle">Today's gratitude tree</h1>
-          <p class="subtitle" id="treeSubtitle"></p>
+        <div class="day-picker" id="dayPicker"></div>
 
-          <div class="day-picker" id="dayPicker"></div>
-
-          <div id="openNotice" class="open-notice hidden">
-            The tree is still open for new entries until midnight Mountain time. Your gratitudes will appear when the tree locks.
-          </div>
-
-          <div id="lockedNotice" class="locked-notice hidden">
-            This tree is locked. No new entries can be added after midnight Mountain time.
-          </div>
-
-          <div id="entryFormSection" class="hidden">
-            <form id="entryForm" class="entry-form">
-              <div>
-                <label for="entryText">Your gratitude (max 120 characters)</label>
-                <textarea id="entryText" maxlength="120" placeholder="I'm grateful for…" required></textarea>
-                <div class="char-count" id="charCount">0 / 120</div>
-              </div>
-              <div class="form-row">
-                <div>
-                  <label for="entryName">Display name (optional)</label>
-                  <input type="text" id="entryName" placeholder="Your name" maxlength="60" />
-                </div>
-                <div class="checkbox-row" style="align-self:flex-end;">
-                  <input type="checkbox" id="entryAnonymous" />
-                  <label for="entryAnonymous">Post anonymously</label>
-                </div>
-              </div>
-              <div class="form-row">
-                <label for="parentSelect">Reply to (optional)</label>
-                <select id="parentSelect" class="parent-select">
-                  <option value="">— New root entry —</option>
-                </select>
-              </div>
-              <div id="limitNotice" class="error">
-                You've reached the limit of 3 entries for today. The tree will be visible after midnight Mountain time.
-              </div>
-              <button type="submit" class="btn btn-primary" id="submitBtn">Add gratitude</button>
-            </form>
-          </div>
-
-          <div id="treeSection" class="hidden">
-            <div id="treeRoot"></div>
-            <div id="emptyTree" class="empty-tree hidden">No entries yet for this day.</div>
-          </div>
-
-          <div id="errorEl" class="error"></div>
+        <div id="openNotice" class="open-notice hidden">
+          This tree is still accepting entries until midnight Mountain time. Gratitudes will appear when the tree locks.
         </div>
+
+        <div id="lockedNotice" class="locked-notice hidden">
+          This tree is locked. No new entries can be added after midnight Mountain time.
+        </div>
+
+        <div id="signInPrompt" class="open-notice hidden" style="text-align:center;">
+          <p style="margin-bottom:12px;">Sign in with Google to add your own gratitude entries.</p>
+          <a href="/app/" class="btn btn-primary">Sign in to contribute</a>
+        </div>
+
+        <div id="entryFormSection" class="hidden">
+          <form id="entryForm" class="entry-form">
+            <div>
+              <label for="entryText">Your gratitude (max 120 characters)</label>
+              <textarea id="entryText" maxlength="120" placeholder="I'm grateful for…" required></textarea>
+              <div class="char-count" id="charCount">0 / 120</div>
+            </div>
+            <div class="form-row">
+              <div>
+                <label for="entryName">Display name (optional)</label>
+                <input type="text" id="entryName" placeholder="Your name" maxlength="60" />
+              </div>
+              <div class="checkbox-row" style="align-self:flex-end;">
+                <input type="checkbox" id="entryAnonymous" />
+                <label for="entryAnonymous">Post anonymously</label>
+              </div>
+            </div>
+            <div class="form-row">
+              <label for="parentSelect">Reply to (optional)</label>
+              <select id="parentSelect" class="parent-select">
+                <option value="">— New root entry —</option>
+              </select>
+            </div>
+            <div id="limitNotice" class="error">
+              You've reached the limit of 3 entries for today. The tree will be visible after midnight Mountain time.
+            </div>
+            <button type="submit" class="btn btn-primary" id="submitBtn">Add gratitude</button>
+          </form>
+        </div>
+
+        <div id="treeSection" class="hidden">
+          <div id="treeRoot"></div>
+          <div id="emptyTree" class="empty-tree hidden">No entries yet for this day.</div>
+        </div>
+
+        <div id="errorEl" class="error"></div>
       </div>
     </div>
   </main>
