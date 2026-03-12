@@ -1,120 +1,156 @@
-// Smooth scrolling (honors reduced motion via CSS block)
+import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.8.1/firebase-app.js';
+import { getFirestore, collection, query, orderBy, onSnapshot } from 'https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore.js';
+
+// smooth scrolling (existing behavior)
 document.documentElement.style.scrollBehavior = 'smooth';
 
-// --- Tiny demo state (no backend) ---
-const input = document.getElementById('noteInput');
-const addBtn = document.getElementById('addBtn');
-const frame = document.getElementById('frame');
-const countLabel = document.getElementById('countLabel');
+// --- Firebase setup (same config used elsewhere) ---
+const firebaseConfig = {
+  apiKey: "AIzaSyAOksyrIIGh0ugEieJ1cK1B3Idl7qQyQyY",
+  authDomain: "gratitree.firebaseapp.com",
+  projectId: "gratitree",
+  storageBucket: "gratitree.firebasestorage.app",
+  messagingSenderId: "517473582832",
+  appId: "1:517473582832:web:886f25ecadf981b9d48c35"
+};
 
-const cards = []; // [{el, text, colors}]
-const palette = [
-    ['#CFFAE1','#7AD9B9'],
-    ['#E6F7FF','#9FD7FF'],
-    ['#FFF2D9','#FFC98B'],
-    ['#F3E8FF','#D0B5FF'],
-    ['#FFE6EA','#FFB8C4'],
-    ['#E6FFE9','#A6F5BD']
-];
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
+const TZ = 'America/Denver';
 
-function randomPalette(){
-    const [soft, bold] = palette[Math.floor(Math.random() * palette.length)];
-    return {soft, bold};
+function formatDayKey(d) {
+  const parts = new Intl.DateTimeFormat('en-CA', {
+    timeZone: TZ,
+    year: 'numeric',
+    month: '2-digit',
+    day: '2-digit',
+  }).formatToParts(d);
+  const map = Object.fromEntries(parts.map((p) => [p.type, p.value]));
+  return `${map.year}-${map.month}-${map.day}`;
 }
 
-function updateCount(){
-    countLabel.textContent = `${cards.length} ${cards.length === 1 ? 'card' : 'cards'}`;
-}
-
-function createCardElement(text, colors){
-    const card = document.createElement('div');
-    card.className = 'stack-card';
-    card.style.background = `linear-gradient(180deg, ${colors.soft}, ${colors.bold})`;
-    card.style.filter = 'saturate(1.05)';
-
-    const inner = document.createElement('div');
-    inner.className = 'text';
-    inner.textContent = text;
-    card.appendChild(inner);
-
-    card.style.transform = 'translateY(0) scale(1)';
-    card.style.opacity = '1';
-    card.style.zIndex = '1000';
-    return card;
-}
-
-function renderStack(){
-    frame.querySelectorAll('.stack-card').forEach(n => n.remove());
-    const visible = Math.min(cards.length, 5);
-
-    for (let i = 0; i < cards.length; i++){
-    const { el } = cards[i];
-    if (i < visible){
-        const offset = i * 10;
-        const scale = 1 - i * 0.04;
-        const opacity = 1 - i * 0.12;
-        el.style.transform = `translateY(${offset}px) scale(${scale})`;
-        el.style.opacity = opacity.toString();
-        el.style.zIndex = (1000 - i).toString();
-        frame.appendChild(el);
+function buildTree(entries) {
+  const map = new Map();
+  for (const e of entries) {
+    map.set(e.id, { ...e, children: [] });
+  }
+  const roots = [];
+  for (const e of map.values()) {
+    const parentId = e.parentId || null;
+    if (!parentId || !map.has(parentId)) {
+      roots.push(e);
     } else {
-        el.style.opacity = '0';
-        el.style.transform = 'translateY(40px) scale(0.8)';
+      map.get(parentId).children.push(e);
     }
-    }
-    updateCount();
+  }
+  roots.sort((a, b) => (a.timestamp?.toMillis?.() ?? 0) - (b.timestamp?.toMillis?.() ?? 0));
+  return roots;
 }
 
-function addCardFromInput(){
-    const text = input.value.trim();
-    if (!text) return;
-    const colors = randomPalette();
-    const el = createCardElement(text, colors);
-    cards.unshift({ el, text, colors });
-    renderStack();
-    input.value = '';
-    input.focus();
+function escapeHtml(str) {
+  return String(str || '')
+    .replaceAll('&', '&amp;')
+    .replaceAll('<', '&lt;')
+    .replaceAll('>', '&gt;')
+    .replaceAll('"', '&quot;')
+    .replaceAll("'", '&#039;');
 }
 
-function cycleStack(){
-    if (cards.length <= 1) return;
-    const top = cards.shift();
-    cards.push(top);
-    renderStack();
+function formatTime(ts) {
+  if (!ts?.toDate) return '';
+  return new Intl.DateTimeFormat('en-US', {
+    timeZone: TZ,
+    hour: 'numeric',
+    minute: '2-digit',
+  }).format(ts.toDate());
 }
 
-addBtn.addEventListener('click', addCardFromInput);
-input.addEventListener('keydown', (e) => {
-    if (e.key === 'Enter'){
-    e.preventDefault();
-    addCardFromInput();
+function renderTreeNode(node) {
+  const hasChildren = node.children && node.children.length > 0;
+  const displayName = node.anonymous ? 'Anonymous' : (node.name || 'Anonymous');
+  const timeStr = formatTime(node.timestamp);
+
+  const div = document.createElement('div');
+  div.className = 'tree-node';
+  div.dataset.entryId = node.id;
+
+  div.innerHTML = `
+    <div class="tree-node-header">
+      <button type="button" class="tree-node-toggle ${hasChildren ? '' : 'empty'}" aria-expanded="true" ${!hasChildren ? 'disabled' : ''}>
+        ${hasChildren ? '▼' : '•'}
+      </button>
+      <div class="tree-node-content">
+        <div class="tree-node-text">${escapeHtml(node.text)}</div>
+        <div class="tree-node-meta">
+          <span>${escapeHtml(displayName)}</span>
+          ${timeStr ? `<span>${timeStr}</span>` : ''}
+        </div>
+      </div>
+    </div>
+    <div class="tree-node-children">
+      ${node.children.map((c) => renderTreeNode(c).outerHTML).join('')}
+    </div>
+  `;
+
+  const toggle = div.querySelector('.tree-node-toggle');
+  const childrenEl = div.querySelector('.tree-node-children');
+
+  if (toggle && hasChildren) {
+    toggle.addEventListener('click', () => {
+      const collapsed = toggle.classList.toggle('collapsed');
+      childrenEl.style.display = collapsed ? 'none' : 'block';
+      toggle.setAttribute('aria-expanded', collapsed ? 'false' : 'true');
+    });
+  }
+
+  return div;
+}
+
+function renderTree(entries) {
+  const container = document.getElementById('demoTree');
+  container.innerHTML = '';
+  if (!entries.length) {
+    container.innerHTML = '<span style="color:#aaa;">No entries yet</span>';
+    return;
+  }
+  const roots = buildTree(entries);
+  for (const r of roots) {
+    container.appendChild(renderTreeNode(r));
+  }
+}
+
+function subscribeToday() {
+  const today = formatDayKey(new Date());
+  const entriesRef = collection(db, 'trees', today, 'entries');
+  const q = query(entriesRef, orderBy('timestamp', 'asc'));
+  onSnapshot(
+    q,
+    (snap) => {
+      const entries = snap.docs.map((d) => ({
+        id: d.id,
+        ...d.data(),
+        timestamp: d.data().timestamp,
+      }));
+      renderTree(entries);
+    },
+    (err) => {
+      console.error(err);
+      const container = document.getElementById('demoTree');
+      container.innerHTML = '<span style="color:red;">Failed to load</span>';
     }
-});
-frame.addEventListener('click', cycleStack);
+  );
+}
 
-// Footer year
-document.getElementById('year').textContent = new Date().getFullYear();
+document.addEventListener('DOMContentLoaded', () => {
+  subscribeToday();
+  document.getElementById('year').textContent = new Date().getFullYear();
 
-// Seed demo
-const samples = [
-    'Morning sunlight through the window',
-    'A friend who checked in',
-    'Finishing that tough task',
-    'Hot tea and a quiet moment'
-];
-samples.reverse().forEach(t => {
-    const colors = randomPalette();
-    const el = createCardElement(t, colors);
-    cards.unshift({ el, text: t, colors });
-});
-renderStack();
-
-// Signup demo submit
-const signup = document.getElementById('signup');
-signup.addEventListener('submit', (e) => {
+  const signup = document.getElementById('signup');
+  signup.addEventListener('submit', (e) => {
     e.preventDefault();
     const email = signup.querySelector('input[type="email"]').value.trim();
     if (!email) return;
     alert(`You're on the list! (demo)\n\nEmail: ${email}`);
     signup.reset();
+  });
 });

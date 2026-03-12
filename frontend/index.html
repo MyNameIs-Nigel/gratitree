@@ -253,6 +253,56 @@
       text-align: center;
       border: 1px dashed rgba(16,42,38,0.15);
     }
+    /* tree preview styles (copied from tree/index.html) */
+    .tree-node {
+      margin-left: 0;
+      margin-bottom: 4px;
+    }
+    .tree-node-children {
+      margin-left: 24px;
+      border-left: 2px solid rgba(42, 143, 107, 0.2);
+      padding-left: 16px;
+      margin-top: 6px;
+    }
+    .tree-node-header {
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+      cursor: pointer;
+      padding: 10px 12px;
+      border-radius: 12px;
+      transition: background 0.15s ease;
+    }
+    .tree-node-header:hover { background: rgba(42, 143, 107, 0.06); }
+    .tree-node-toggle {
+      flex-shrink: 0;
+      width: 24px;
+      height: 24px;
+      border: none;
+      background: rgba(42, 143, 107, 0.15);
+      color: var(--primary);
+      border-radius: 6px;
+      font-size: 0.8rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: transform 0.2s ease;
+    }
+    .tree-node-toggle.collapsed { transform: rotate(-90deg); }
+    .tree-node-toggle.empty { background: rgba(16, 42, 38, 0.08); color: var(--muted); cursor: default; }
+    .tree-node-content {
+      flex: 1;
+      min-width: 0;
+    }
+    .tree-node-text { font-size: 1rem; line-height: 1.5; margin-bottom: 4px; }
+    .tree-node-meta {
+      font-size: 0.82rem;
+      color: var(--muted);
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
 
     .demo-controls {
       display: flex;
@@ -401,22 +451,12 @@
 
   <section id="demo" class="section">
     <div class="demo-section">
-      <h2>Interactive Demo</h2>
+      <h2>Today's Tree Preview</h2>
       <p style="color: var(--muted); margin-bottom: 2rem;">
-        Type a gratitude note below to see it appear as a card. Click the frame to cycle through notes.
+        See a live preview of today’s gratitude tree. (read-only)
       </p>
-
-      <div class="demo-controls">
-        <input id="noteInput" type="text" placeholder="Today I'm grateful for..." autocomplete="off">
-        <button id="addBtn" class="btn btn-primary">Add Leaf</button>
-      </div>
-
-      <div class="frame" id="frame" title="Click to cycle cards">
-        <span style="color: #aaa; font-size: 0.9rem;">(Added cards appear here)</span>
-      </div>
-      
-      <div style="margin-top: 1rem; font-size: 0.85rem; color: var(--muted);">
-        <span id="countLabel">0 cards</span> • Temporary demo (No data is saved)
+      <div id="demoTree" class="tree-root" style="text-align:left; margin:0 auto; max-width:800px;">
+        <span style="color:#aaa;font-size:0.9rem;">Loading…</span>
       </div>
     </div>
   </section>
@@ -462,91 +502,11 @@
         <a href="mailto:hello@gratitree.com">Contact</a>
       </div>
       <p style="font-size: 0.8rem; margin-top: 2rem; opacity: 0.7;">
-        © 2026 GratiTree • Deployed with Firebase
+        © <span id="year">2026</span> GratiTree • Deployed with Firebase
       </p>
     </div>
   </footer>
 
-  <script>
-    document.addEventListener('DOMContentLoaded', () => {
-      const input = document.getElementById('noteInput');
-      const addBtn = document.getElementById('addBtn');
-      const frame = document.getElementById('frame');
-      const countLabel = document.getElementById('countLabel');
-      
-      let notes = [];
-      let currentIndex = 0;
-
-      // Add Note Function
-      function addNote() {
-        const text = input.value.trim();
-        if (!text) return;
-
-        notes.push(text);
-        input.value = '';
-        renderCard(text);
-        updateCount();
-      }
-
-      // Render the latest card on top
-      function renderCard(text) {
-        // Clear frame hint if it's the first note
-        if (notes.length === 1) frame.innerHTML = '';
-
-        const card = document.createElement('div');
-        card.className = 'stack-card';
-        card.textContent = text;
-        
-        // Random slight rotation for organic feel
-        const rotate = (Math.random() * 6 - 3).toFixed(1);
-        card.style.transform = `rotate(${rotate}deg) scale(0.9)`;
-        
-        // Animation in
-        card.style.opacity = '0';
-        frame.appendChild(card);
-        
-        // Trigger reflow
-        void card.offsetWidth; 
-        
-        card.style.transition = 'all 0.4s ease';
-        card.style.opacity = '1';
-        card.style.transform = `rotate(${rotate}deg) scale(1)`;
-        
-        // If multiple cards, hide previous ones visually or stack them?
-        // For simple demo, we just pile them. 
-      }
-
-      function updateCount() {
-        countLabel.textContent = `${notes.length} card${notes.length !== 1 ? 's' : ''}`;
-      }
-
-      // Cycle cards on click
-      frame.addEventListener('click', () => {
-        if (notes.length < 2) return;
-        
-        const cards = frame.querySelectorAll('.stack-card');
-        if (cards.length > 0) {
-          const topCard = cards[cards.length - 1];
-          
-          // Animate out
-          topCard.style.transform = 'translateY(20px) scale(0.95)';
-          topCard.style.opacity = '0';
-          
-          setTimeout(() => {
-            frame.prepend(topCard);
-            // Reset state
-            void topCard.offsetWidth;
-            topCard.style.transform = 'rotate(' + (Math.random() * 6 - 3) + 'deg)';
-            topCard.style.opacity = '1';
-          }, 300);
-        }
-      });
-
-      addBtn.addEventListener('click', addNote);
-      input.addEventListener('keypress', (e) => {
-        if (e.key === 'Enter') addNote();
-      });
-    });
-  </script>
+  <script type="module" src="js/landing.js"></script>
 </body>
 </html>
