@@ -283,7 +283,7 @@ async function getUserEntryCount(dayId, uid) {
 // Subscribe to entries for a day (only works when tree is closed)
 // ---------------------------------------------------------------------------
 
-function subscribeToEntries(dayId) {
+function subscribeToEntries(dayId, user = null) {
   if (unsubscribeEntries) unsubscribeEntries();
 
   const entriesRef = collection(db, 'trees', dayId, 'entries');
@@ -299,6 +299,17 @@ function subscribeToEntries(dayId) {
       }));
       renderTree(entries);
       fillParentSelect(entries);
+
+      // While tree is open, keep the form limit state in sync with live entry count
+      if (user && isTreeOpen(dayId)) {
+        const count = entries.filter((e) => e.uid === user.uid).length;
+        const atLimit = count >= MAX_ENTRIES_PER_DAY;
+        els.limitNotice.classList.toggle('hidden', !atLimit);
+        els.submitBtn.disabled = atLimit;
+        els.entryForm.querySelectorAll('input, textarea, select').forEach((el) => {
+          el.disabled = atLimit;
+        });
+      }
     },
     (err) => {
       console.error(err);
@@ -337,39 +348,18 @@ async function switchDay(dayId, user) {
   if (open) {
     els.openNotice.classList.remove('hidden');
     els.lockedNotice.classList.add('hidden');
-    els.treeSection.classList.add('hidden');
-    unsubscribeEntries?.();
-    unsubscribeEntries = null;
 
     if (user) {
       els.entryFormSection.classList.remove('hidden');
       els.signInPrompt.classList.add('hidden');
-
-      const entriesRef = collection(db, 'trees', dayId, 'entries');
-      const q = query(
-        entriesRef,
-        where('uid', '==', user.uid),
-        orderBy('timestamp', 'asc')
-      );
-      const snap = await getDocs(q);
-      const entries = snap.docs.map((d) => ({
-        id: d.id,
-        ...d.data(),
-        timestamp: d.data().timestamp,
-      }));
-
-      const count = entries.length;
-      const atLimit = count >= MAX_ENTRIES_PER_DAY;
-      els.limitNotice.classList.toggle('hidden', !atLimit);
-      els.submitBtn.disabled = atLimit;
-      els.entryForm.querySelectorAll('input, textarea, select').forEach((el) => {
-        el.disabled = atLimit;
-      });
-
-      fillParentSelect(entries);
+      els.treeSection.classList.remove('hidden');
+      subscribeToEntries(dayId, user);
     } else {
+      els.treeSection.classList.add('hidden');
       els.entryFormSection.classList.add('hidden');
       els.signInPrompt.classList.remove('hidden');
+      unsubscribeEntries?.();
+      unsubscribeEntries = null;
     }
   } else {
     els.openNotice.classList.add('hidden');
