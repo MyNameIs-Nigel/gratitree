@@ -146,11 +146,13 @@ document.addEventListener('DOMContentLoaded', () => {
   document.getElementById('year').textContent = new Date().getFullYear();
 
   const signup = document.getElementById('signup');
-  signup.addEventListener('submit', (e) => {
-    e.preventDefault();
-    const email = signup.querySelector('input[type="email"]').value.trim();
-    if (!email) return;
-    alert(`You're on the list! (demo)\n\nEmail: ${email}`);
-    signup.reset();
-  });
+  if (signup) {
+    signup.addEventListener('submit', (e) => {
+      e.preventDefault();
+      const email = signup.querySelector('input[type="email"]').value.trim();
+      if (!email) return;
+      alert(`You're on the list! (demo)\n\nEmail: ${email}`);
+      signup.reset();
+    });
+  }
 });

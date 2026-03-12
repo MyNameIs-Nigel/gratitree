@@ -18,8 +18,8 @@ service cloud.firestore {
     // Entries under a tree
     match /trees/{dayId}/entries/{entryId} {
 
-      // Public read after lock; while open, any signed-in user can read all entries (for live tree)
-      allow get, list: if !isOpen(dayId) || signedIn();
+      // Always publicly readable — entries are non-sensitive gratitude content
+      allow get, list: if true;
 
       // Writes: only while the tree is open, only authenticated users
       allow create: if signedIn()
