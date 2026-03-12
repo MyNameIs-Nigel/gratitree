@@ -62,8 +62,8 @@ function renderEntries(docs) {
         <strong>Tree:</strong> <span>${escapeHtml(data.tree ?? "")}</span>
         <strong>Date:</strong> <span>${formatDate(data.date)}</span>
       </div>
-      <div style="margin-top:.5rem">${escapeHtml(data.entry ?? "")}</div>
-      <div class="muted" style="margin-top:.5rem">Doc ID: ${doc.id}</div>
+      <div class="mt-05">${escapeHtml(data.entry ?? "")}</div>
+      <div class="muted mt-05">Doc ID: ${doc.id}</div>
     `;
 
     listEl.appendChild(li);

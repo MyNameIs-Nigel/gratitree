@@ -320,7 +320,7 @@
     </a>
     <div class="nav-links">
       <a class="btn btn-ghost" href="/app/">Dashboard</a>
-      <span id="userSpan" class="hidden" style="font-size:0.9rem;color:var(--muted);"></span>
+      <span id="userSpan" class="hidden small-muted"></span>
       <button id="signOutBtn" class="btn btn-ghost hidden" type="button">Sign out</button>
     </div>
   </header>
@@ -341,8 +341,8 @@
           This tree is locked. No new entries can be added after midnight Mountain time.
         </div>
 
-        <div id="signInPrompt" class="open-notice hidden" style="text-align:center;">
-          <p style="margin-bottom:12px;">Sign in with Google to add your own gratitude entries.</p>
+        <div id="signInPrompt" class="open-notice hidden text-center">
+          <p class="mb-12">Sign in with Google to add your own gratitude entries.</p>
           <a href="/app/" class="btn btn-primary">Sign in to contribute</a>
         </div>
 
@@ -358,7 +358,7 @@
                 <label for="entryName">Display name (optional)</label>
                 <input type="text" id="entryName" placeholder="Your name" maxlength="60" />
               </div>
-              <div class="checkbox-row" style="align-self:flex-end;">
+              <div class="checkbox-row align-flex-end">
                 <input type="checkbox" id="entryAnonymous" />
                 <label for="entryAnonymous">Post anonymously</label>
               </div>
@@ -378,7 +378,7 @@
 
         <div id="treeSection" class="hidden">
           <div id="treeRoot"></div>
-          <div id="emptyTree" class="empty-tree hidden">No entries yet for this day.</div>
+          <div id="emptyTree" class="empty-tree hidden">No entries for this day.</div>
         </div>
 
         <div id="errorEl" class="error"></div>

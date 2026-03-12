@@ -402,7 +402,7 @@
       <a href="#mission">How it works</a>
       <a href="#demo">Demo</a>
       <a href="#team">Team</a>
-      <a href="/app" class="btn btn-primary" style="padding: 8px 20px; font-size: 0.9rem;">Sign Up</a>
+      <a href="/app" class="btn btn-primary btn-sm">Dashboard</a>
     </div>
   </header>
 
@@ -419,8 +419,8 @@
       </div>
     </div>
     
-    <div style="margin-top: 3rem; opacity: 0.8; transform: scale(0.9);">
-       <div style="font-size: 4rem; text-shadow: 0 20px 40px rgba(42,143,107,0.3);"><a style="background: white; padding: 15px 28px; border-radius: 100px;" href="#mission">↓</a></div>
+    <div class="hero-arrow-container">
+       <div class="hero-arrow-wrapper"><a class="hero-arrow" href="#mission">↓</a></div>
     </div>
   </section>
 
@@ -452,11 +452,11 @@
   <section id="demo" class="section">
     <div class="demo-section">
       <h2>Today's Tree Preview</h2>
-      <p style="color: var(--muted); margin-bottom: 2rem;">
+      <p class="demo-intro">
         See a live preview of today’s gratitude tree. (read-only)
       </p>
-      <div id="demoTree" class="tree-root" style="text-align:left; margin:0 auto; max-width:800px;">
-        <span style="color:#aaa;font-size:0.9rem;">Loading…</span>
+      <div id="demoTree" class="tree-root demo-tree">
+        <span class="placeholder">Loading…</span>
       </div>
     </div>
   </section>
@@ -468,27 +468,28 @@
     <div class="team-grid">
       <div class="team-member">
         <div class="avatar">NS</div>
-        <div><strong>Nigel Smith</strong><div style="font-size:0.8rem; color:var(--muted)">Product & Cloud</div></div>
+        <div><strong>Nigel Smith</strong><div class="member-role">Product & Cloud</div></div>
       </div>
       <div class="team-member">
         <div class="avatar">CB</div>
-        <div><strong>Cashton Bone</strong><div style="font-size:0.8rem; color:var(--muted)">Project Manager</div></div>
+        <div><strong>Cashton Bone</strong><div class="member-role">Project Manager</div></div>
       </div>
       <div class="team-member">
         <div class="avatar">ZW</div>
-        <div><strong>Zack Williams</strong><div style="font-size:0.8rem; color:var(--muted)">Tech Lead</div></div>
+        
+        <div><strong>Zack Williams</strong><div class="member-role">Tech Lead</div></div>
       </div>
       <div class="team-member">
         <div class="avatar">ZG</div>
-        <div><strong>Zack Gray</strong><div style="font-size:0.8rem; color:var(--muted)">Backend Dev</div></div>
+        <div><strong>Zack Gray</strong><div class="member-role">Backend Dev</div></div>
       </div>
       <div class="team-member">
         <div class="avatar">OM</div>
-        <div><strong>Owen Means</strong><div style="font-size:0.8rem; color:var(--muted)">UX Designer</div></div>
+        <div><strong>Owen Means</strong><div class="member-role">UX Designer</div></div>
       </div>
       <div class="team-member">
         <div class="avatar">EJ</div>
-        <div><strong>Emily Jenkins</strong><div style="font-size:0.8rem; color:var(--muted)">SEO & Security</div></div>
+        <div><strong>Emily Jenkins</strong><div class="member-role">SEO & Security</div></div>
       </div>
     </div>
   </section>
@@ -496,12 +497,12 @@
   <footer>
     <div class="container">
       <h3>GratiTree</h3>
-      <p style="margin-bottom: 1.5rem;">Grow your gratitude, one day at a time.</p>
+      <p class="footer-desc">Grow your gratitude, one day at a time.</p>
       <div class="footer-links">
         <a href="signup">Sign Up</a>
         <a href="mailto:hello@gratitree.com">Contact</a>
       </div>
-      <p style="font-size: 0.8rem; margin-top: 2rem; opacity: 0.7;">
+      <p class="footer-note">
         © <span id="year">2026</span> GratiTree • Deployed with Firebase
       </p>
     </div>

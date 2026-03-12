@@ -275,17 +275,17 @@
         <p class="subtitle">Browse recent trees or sign in to add your own gratitude entries.</p>
 
         <div class="shell">
-          <section class="card" style="padding: 20px;">
+          <section class="card card-padding-20">
             <div class="kicker">Browse trees</div>
             <div class="tree-list" id="treeList">
               <!-- links injected by JS -->
             </div>
           </section>
 
-          <aside class="card" style="padding: 20px;">
+          <aside class="card card-padding-20">
             <div id="signedOutView">
               <div class="kicker">Sign in to contribute</div>
-              <button id="googleBtn" class="btn btn-primary" type="button" style="margin-bottom:10px;">
+              <button id="googleBtn" class="btn btn-primary mb-10" type="button">
                 <span class="gmark" aria-hidden="true"></span>
                 Continue with Google
               </button>
@@ -412,10 +412,10 @@
 
         a.innerHTML = `
           <div>
-            <div style="font-weight:800;">${t.label}</div>
+            <div class="font-strong">${t.label}</div>
             <small>${t.key}</small>
           </div>
-          <div style="font-weight:800;color:var(--primary);">→</div>
+          <div class="font-strong text-primary">→</div>
         `;
         els.treeList.appendChild(a);
       }

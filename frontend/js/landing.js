@@ -110,7 +110,7 @@ function renderTree(entries) {
   const container = document.getElementById('demoTree');
   container.innerHTML = '';
   if (!entries.length) {
-    container.innerHTML = '<span style="color:#aaa;">No entries yet</span>';
+    container.innerHTML = '<span class="placeholder">No entries yet</span>';
     return;
   }
   const roots = buildTree(entries);
@@ -136,7 +136,7 @@ function subscribeToday() {
     (err) => {
       console.error(err);
       const container = document.getElementById('demoTree');
-      container.innerHTML = '<span style="color:red;">Failed to load</span>';
+      container.innerHTML = '<span class="error-text">Failed to load</span>';
     }
   );
 }
