@@ -3,216 +3,198 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>404 — GratiTree</title>
+  <title>GratiTree — Page Not Found</title>
   <link rel="icon" href="/images/favicon.ico">
+
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
-  <style>
 
-    :root{
-      --bg-start:#f1fff8;
-      --bg-end:#e7f3ff;
-      --ink:#102a26;
-      --muted:#4f6b66;
-      --primary:#2a8f6b;
-      --primary-strong:#197a58;
-      --accent:#7cc4a9;
-      --ring: rgba(42,143,107,0.25);
-      --card-bg: rgba(255,255,255,0.68);
-      --glass: rgba(255,255,255,0.55);
-      --shadow: 0 10px 30px rgba(16,42,38,0.15);
-      --shadow-soft: 0 10px 24px rgba(16,42,38,0.10);
-      --border: 1px solid rgba(16,42,38,0.10);
+  <style>
+    :root {
+      --bg-start: #f1fff8;
+      --bg-end: #e7f3ff;
+      --ink: #102a26;
+      --muted: #4f6b66;
+      --primary: #2a8f6b;
+      --primary-hover: #197a58;
+      --card-bg: rgba(255, 255, 255, 0.80);
+      --glass: rgba(255, 255, 255, 0.6);
+      --shadow-soft: 0 10px 40px rgba(16, 42, 38, 0.10);
+      --border: 1px solid rgba(16, 42, 38, 0.10);
+      --radius: 20px;
     }
-    *{box-sizing:border-box}
-    html, body {
-      margin:0;
-      padding:0;
-      font-family: 'Inter', system-ui, -apple-system, Segoe UI, Arial, sans-serif;
-      color:var(--ink);
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: 'Inter', sans-serif;
+      color: var(--ink);
+      line-height: 1.6;
       background:
-        radial-gradient(1200px 600px at 20% 0%, var(--bg-start), transparent),
-        radial-gradient(1200px 600px at 80% 10%, var(--bg-end), transparent),
+        radial-gradient(1000px 600px at 20% 0%, var(--bg-start), transparent),
+        radial-gradient(1000px 600px at 80% 10%, var(--bg-end), transparent),
         linear-gradient(180deg, #fbfffd 0%, #f5fbff 100%);
+      background-attachment: fixed;
       min-height: 100vh;
     }
-    a{ color: var(--primary); text-decoration:none; }
-    a:hover{ text-decoration: underline; }
-    .container{ max-width: 1100px; margin: 0 auto; padding: 24px; }
 
-    header{
-      position: sticky;
-      top:0;
-      z-index: 60;
-      backdrop-filter: blur(10px);
-      background: linear-gradient(to bottom, rgba(255,255,255,0.86), rgba(255,255,255,0.66));
-      border-bottom: 1px solid rgba(16,42,38,0.08);
+    a { text-decoration: none; color: inherit; }
+
+    header {
+      position: fixed;
+      top: 0;
+      width: 100%;
+      height: 70px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 2rem;
+      background: rgba(255, 255, 255, 0.85);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid rgba(0,0,0,0.05);
+      z-index: 1000;
     }
-    .nav{ display:flex; align-items:center; justify-content: space-between; gap: 14px; }
-    .brand{ display:flex; align-items:center; gap: 10px; font-weight: 800; color: var(--primary-strong); letter-spacing: 0.2px; }
-    .logo{
-      width: 34px; height: 34px; border-radius: 8px;
-      background: conic-gradient(from 180deg, #5ac08f, #7bd5b2, #c8f1e2, #8ed0ff, #5ac08f);
-      box-shadow: var(--shadow); display:grid; place-items:center;
+
+    .brand {
+      font-weight: 800;
+      font-size: 1.15rem;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      color: var(--primary);
     }
-    .logo::after{ content:"🌱"; filter: drop-shadow(0 2px 2px rgba(0,0,0,0.12)); transform: translateY(-1px); }
+    .brand img { width: 44px; height: auto; }
 
-    .nav-links{ display:flex; align-items:center; gap: 12px; flex-wrap: wrap; justify-content:flex-end; }
-    .nav-links a{ font-weight: 600; color: var(--ink); opacity: 0.85; }
-    .nav-links a:hover{ opacity: 1; }
-
-    .btn{
-      display:inline-flex; align-items:center; justify-content:center; gap: 8px;
-      padding: 10px 14px; border-radius: 12px; font-weight: 700;
-      border: 1px solid rgba(0,0,0,0.06);
-      box-shadow: 0 8px 18px rgba(42,143,107,0.22);
-      cursor:pointer; user-select:none;
-      text-decoration: none !important;
+    .nav-links {
+      display: flex;
+      align-items: center;
+      gap: 14px;
     }
-    .btn-primary{ background: var(--primary); color: #fff; }
-    .btn-primary:hover{ background: var(--primary-strong); }
-    .btn-ghost{ background: rgba(255,255,255,0.65); color: var(--ink); border: 1px solid rgba(16,42,38,0.12); box-shadow: var(--shadow-soft); }
-    .btn-ghost:hover{ filter: brightness(0.98); }
 
-    .card{
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      padding: 12px 18px;
+      border-radius: 999px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      border: none;
+      font-size: 0.95rem;
+      user-select: none;
+      white-space: nowrap;
+    }
+
+    .btn-primary {
+      background: var(--primary);
+      color: #fff;
+      box-shadow: 0 4px 14px rgba(42, 143, 107, 0.30);
+    }
+    .btn-primary:hover { background: var(--primary-hover); transform: translateY(-1px); }
+
+    .btn-ghost {
+      background: rgba(255,255,255,0.85);
+      color: var(--primary);
+      border: 1px solid rgba(16, 42, 38, 0.10);
+    }
+    .btn-ghost:hover { background: #fff; }
+
+    main {
+      padding-top: 92px;
+      padding-bottom: 64px;
+      min-height: calc(100vh - 156px);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .container {
+      max-width: 600px;
+      margin: 0 auto;
+      padding: 0 24px;
+      text-align: center;
+    }
+
+    .card {
       background: var(--card-bg);
       border: var(--border);
-      border-radius: 18px;
-      padding: 18px;
-      box-shadow: var(--shadow);
+      border-radius: var(--radius);
+      padding: 40px;
+      box-shadow: var(--shadow-soft);
       backdrop-filter: blur(8px);
     }
-    .pill{
-      display:inline-flex; align-items:center; gap: 8px;
-      padding: 8px 12px; border-radius: 999px;
-      background: var(--glass);
-      border: 1px solid rgba(16,42,38,0.08);
-      box-shadow: var(--shadow);
-      width: fit-content;
-      font-weight: 700;
-      color: var(--primary-strong);
-      font-size: 13px;
-    }
-    .center{
-      min-height: calc(83vh - 84px);
-      display:grid;
-      place-items:center;
-      padding: 0;
-    }
-    .wrap{ width: min(900px, 100%); display:grid; grid-template-columns: 1.1fr 0.9fr; gap: 16px; align-items: stretch; }
-    @media (max-width: 900px){ .wrap{ grid-template-columns: 1fr; } }
 
-    .headline{ font-size: clamp(28px, 5vw, 52px); line-height: 1.05; margin: 10px 0 10px; letter-spacing: -0.02em; }
-    .tagline{ color: var(--muted); font-size: clamp(16px, 2.1vw, 18px); line-height: 1.65; margin: 0 0 14px; }
-    .fine{ font-size: 12px; color: rgba(79,107,102,0.9); }
+    .error-code {
+      font-size: clamp(4rem, 10vw, 6rem);
+      font-weight: 800;
+      color: var(--primary);
+      line-height: 1;
+      margin-bottom: 1rem;
+    }
 
-    .status-graphic{
-      position: relative;
-      border-radius: 16px;
-      border: 1px dashed rgba(16,42,38,0.22);
-      background: linear-gradient(180deg, rgba(255,255,255,0.78), rgba(255,255,255,0.58));
-      overflow: hidden;
-      min-height: 260px;
-      display:grid;
-      place-items:center;
-      text-align:center;
-      padding: 18px;
+    .title {
+      font-size: clamp(1.8rem, 4vw, 2.5rem);
+      line-height: 1.2;
+      letter-spacing: -0.02em;
+      margin-bottom: 1rem;
     }
-    .blob{
-      position:absolute;
-      inset:auto;
-      width: 260px;
-      height: 260px;
-      border-radius: 999px;
-      opacity: 0.75;
-      background: radial-gradient(circle at 30% 30%, rgba(122,217,185,0.70), transparent 55%),
-                  radial-gradient(circle at 70% 35%, rgba(159,215,255,0.70), transparent 55%),
-                  radial-gradient(circle at 45% 70%, rgba(255,201,139,0.55), transparent 60%);
-      transform: translateY(40px);
-    }
-    .icon{
-      width: 64px;
-      height: 64px;
-      border-radius: 20px;
-      display:grid;
-      place-items:center;
-      background: conic-gradient(from 180deg, rgba(90,192,143,0.95), rgba(123,213,178,0.85), rgba(200,241,226,0.9), rgba(142,208,255,0.85), rgba(90,192,143,0.95));
-      box-shadow: var(--shadow);
-      border: 1px solid rgba(16,42,38,0.10);
-      position: relative;
-      z-index: 2;
-      color: rgba(255,255,255,0.98);
-      font-weight: 900;
-      font-size: 26px;
-    }
-    .actions{ display:flex; flex-wrap:wrap; gap: 10px; margin-top: 10px; }
 
-    footer{
-      padding: 22px 0;
+    .subtitle {
       color: var(--muted);
-      font-size: 14px;
-      border-top: 1px solid rgba(16,42,38,0.08);
+      font-size: 1.1rem;
+      margin-bottom: 2rem;
     }
 
-    @media (prefers-reduced-motion: reduce){
-      *{ scroll-behavior: auto !important; transition: none !important; }
+    .actions {
+      display: flex;
+      gap: 12px;
+      justify-content: center;
+      flex-wrap: wrap;
     }
 
+    footer {
+      text-align: center;
+      padding: 24px 0 42px;
+      color: var(--muted);
+      font-size: 0.85rem;
+      opacity: 0.85;
+    }
+
+    @media (max-width: 480px) {
+      .actions { flex-direction: column; align-items: center; }
+      .card { padding: 30px 20px; }
+    }
   </style>
 </head>
+
 <body>
   <header>
-    <div class="container nav" role="navigation" aria-label="Primary">
-      <a class="brand" href="/" aria-label="GratiTree home">
-        <span class="logo" aria-hidden="true"></span>
-        <span>GratiTree</span>
-      </a>
-      <div class="nav-links">
-        <a href="/" class="btn btn-ghost">Home</a>
-        <a href="/app" class="btn btn-primary ghost-white">Sign Up</a>
-      </div>
+    <a class="brand" href="/">
+      <span><img src="/images/logo.png" alt="GratiTree logo"></span> GratiTree
+    </a>
+    <div class="nav-links">
+      <a class="btn btn-ghost" href="/">Home</a>
+      <a class="btn btn-ghost" href="/app">Dashboard</a>
     </div>
   </header>
 
-  <main class="container">
-    <div class="center">
-      <div class="wrap">
-        <section class="card" aria-label="404 message">
-          <span class="pill">404 • Page not found</span>
-          <h1 class="headline">This branch doesn't exist.</h1>
-          <p class="tagline">
-            The page you're looking for may have moved, been renamed, or never grew here in the first place.
-            Let's get you back to the tree.
-          </p>
-          <div class="actions">
-            <a class="btn btn-primary" href="/">Back to Home</a>
-            <a class="btn btn-ghost" href="/demo">Try the Demo</a>
-          </div>
-          <p class="fine fine-margin">Tip: Check the URL for typos, or use the navigation above.</p>
-        </section>
-
-        <aside class="card" aria-label="Visual">
-          <div class="status-graphic">
-            <div class="blob" aria-hidden="true"></div>
-            <div class="icon" aria-hidden="true">404</div>
-            <div class="relative-z">
-              <div class="bold">Lost leaf, found community.</div>
-              <div class="fine fine-margin-small">GratiTree keeps growing—this page just isn't part of today's forest.</div>
-            </div>
-          </div>
-        </aside>
+  <main>
+    <div class="container">
+      <div class="card">
+        <div class="error-code">404</div>
+        <h1 class="title">Page Not Found</h1>
+        <p class="subtitle">
+          The page you're looking for doesn't exist. It might have been moved, deleted, or you entered the wrong URL.
+        </p>
+        <div class="actions">
+          <a href="/" class="btn btn-primary">Go Home</a>
+          <a href="/app" class="btn btn-ghost">View Trees</a>
+        </div>
       </div>
     </div>
   </main>
 
-  <footer>
-    <div class="container">
-      © <span id="year"></span> GratiTree — Made with 🌿
-    </div>
-  </footer>
-
-  <script>
-    document.getElementById('year').textContent = new Date().getFullYear();
-  </script>
+  <footer>© 2026 GratiTree • Deployed with Firebase</footer>
 </body>
 </html>
