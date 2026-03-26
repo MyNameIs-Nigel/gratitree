@@ -1,0 +1,2 @@
+# Apache: custom error page (matches Firebase Hosting-style 404 page)
+ErrorDocument 404 /404.html

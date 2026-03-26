@@ -1,33 +1,43 @@
-import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.8.1/firebase-app.js';
-import { getFirestore, collection, query, orderBy, onSnapshot } from 'https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore.js';
+// GratiTree landing — demo tree preview (no Firebase; static PoC data)
 
-// smooth scrolling (existing behavior)
 document.documentElement.style.scrollBehavior = 'smooth';
 
-// --- Firebase setup (same config used elsewhere) ---
-const firebaseConfig = {
-  apiKey: "AIzaSyAOksyrIIGh0ugEieJ1cK1B3Idl7qQyQyY",
-  authDomain: "gratitree.firebaseapp.com",
-  projectId: "gratitree",
-  storageBucket: "gratitree.firebasestorage.app",
-  messagingSenderId: "517473582832",
-  appId: "1:517473582832:web:886f25ecadf981b9d48c35"
-};
-
-const app = initializeApp(firebaseConfig);
-const db = getFirestore(app);
 const TZ = 'America/Denver';
 
-function formatDayKey(d) {
-  const parts = new Intl.DateTimeFormat('en-CA', {
-    timeZone: TZ,
-    year: 'numeric',
-    month: '2-digit',
-    day: '2-digit',
-  }).formatToParts(d);
-  const map = Object.fromEntries(parts.map((p) => [p.type, p.value]));
-  return `${map.year}-${map.month}-${map.day}`;
+/** Demo entries — Firestore-like shape for shared render helpers */
+function mockTs(date) {
+  return {
+    toDate: () => date,
+    toMillis: () => date.getTime(),
+  };
 }
+
+const DEMO_ENTRIES = [
+  {
+    id: '1',
+    text: 'Grateful for morning coffee and quiet time.',
+    name: 'Alex',
+    anonymous: false,
+    parentId: null,
+    timestamp: mockTs(new Date(2026, 2, 26, 8, 15)),
+  },
+  {
+    id: '2',
+    text: 'Same here — small rituals matter.',
+    name: 'Sam',
+    anonymous: false,
+    parentId: '1',
+    timestamp: mockTs(new Date(2026, 2, 26, 9, 5)),
+  },
+  {
+    id: '3',
+    text: 'Appreciating my team today.',
+    name: 'Jordan',
+    anonymous: false,
+    parentId: null,
+    timestamp: mockTs(new Date(2026, 2, 26, 11, 30)),
+  },
+];
 
 function buildTree(entries) {
   const map = new Map();
@@ -119,31 +129,14 @@ function renderTree(entries) {
   }
 }
 
-function subscribeToday() {
-  const today = formatDayKey(new Date());
-  const entriesRef = collection(db, 'trees', today, 'entries');
-  const q = query(entriesRef, orderBy('timestamp', 'asc'));
-  onSnapshot(
-    q,
-    (snap) => {
-      const entries = snap.docs.map((d) => ({
-        id: d.id,
-        ...d.data(),
-        timestamp: d.data().timestamp,
-      }));
-      renderTree(entries);
-    },
-    (err) => {
-      console.error(err);
-      const container = document.getElementById('demoTree');
-      container.innerHTML = '<span class="error-text">Failed to load</span>';
-    }
-  );
+function showDemoTree() {
+  renderTree(DEMO_ENTRIES);
 }
 
 document.addEventListener('DOMContentLoaded', () => {
-  subscribeToday();
-  document.getElementById('year').textContent = new Date().getFullYear();
+  showDemoTree();
+  const yearEl = document.getElementById('year');
+  if (yearEl) yearEl.textContent = new Date().getFullYear();
 
   const signup = document.getElementById('signup');
   if (signup) {

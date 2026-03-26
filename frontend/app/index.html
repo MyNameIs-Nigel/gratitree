@@ -319,31 +319,17 @@
         </div>
       </div>
 
-      <footer>© 2026 GratiTree • Deployed with Firebase</footer>
+      <footer>© 2026 GratiTree • Deployed on AWS (demo)</footer>
     </div>
   </main>
 
   <script type="module">
-    import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.8.1/firebase-app.js';
-    import {
-      getAuth,
-      GoogleAuthProvider,
-      signInWithPopup,
-      signOut,
-      onAuthStateChanged
-    } from 'https://www.gstatic.com/firebasejs/10.8.1/firebase-auth.js';
-
-    const firebaseConfig = {
-      apiKey: "AIzaSyAOksyrIIGh0ugEieJ1cK1B3Idl7qQyQyY",
-      authDomain: "gratitree.firebaseapp.com",
-      projectId: "gratitree",
-      storageBucket: "gratitree.firebasestorage.app",
-      messagingSenderId: "517473582832",
-      appId: "1:517473582832:web:886f25ecadf981b9d48c35"
+    // Static demo: no Firebase — simulated signed-in user
+    const DEMO_USER = {
+      displayName: 'Demo User',
+      email: 'demo@gratitree.local',
+      photoURL: null,
     };
-
-    const app = initializeApp(firebaseConfig);
-    const auth = getAuth(app);
 
     const els = {
       signedOutView: document.getElementById('signedOutView'),
@@ -359,27 +345,30 @@
       treeList: document.getElementById('treeList'),
     };
 
-    function show(el, on = true) { el.classList.toggle('hidden', !on); }
+    function show(el, on = true) {
+      if (el) el.classList.toggle('hidden', !on);
+    }
     function setError(el, msg) {
+      if (!el) return;
       el.style.display = msg ? 'block' : 'none';
       el.textContent = msg || '';
     }
 
-    const TZ = null;
-
     function formatDayKey(d) {
       const parts = new Intl.DateTimeFormat('en-CA', {
-        timeZone: TZ || undefined,
-        year: 'numeric', month: '2-digit', day: '2-digit'
+        year: 'numeric',
+        month: '2-digit',
+        day: '2-digit',
       }).formatToParts(d);
-      const map = Object.fromEntries(parts.map(p => [p.type, p.value]));
+      const map = Object.fromEntries(parts.map((p) => [p.type, p.value]));
       return `${map.year}-${map.month}-${map.day}`;
     }
 
     function formatPretty(d) {
       return new Intl.DateTimeFormat('en-US', {
-        timeZone: TZ || undefined,
-        weekday: 'short', month: 'short', day: 'numeric'
+        weekday: 'short',
+        month: 'short',
+        day: 'numeric',
       }).format(d);
     }
 
@@ -393,7 +382,7 @@
         links.push({
           label: i === 0 ? 'Today' : formatPretty(d),
           key,
-          isToday: i === 0
+          isToday: i === 0,
         });
       }
       return links;
@@ -421,38 +410,12 @@
       }
     }
 
-    renderTreeLinks();
-
-    els.googleBtn.addEventListener('click', async () => {
-      setError(els.authError, '');
-      try {
-        const provider = new GoogleAuthProvider();
-        provider.setCustomParameters({ prompt: 'select_account' });
-        await signInWithPopup(auth, provider);
-      } catch (e) {
-        console.error(e);
-        setError(els.authError, friendlyAuthError(e));
-      }
-    });
-
-    async function doSignOut() {
-      setError(els.dashError, '');
-      try {
-        await signOut(auth);
-      } catch (e) {
-        console.error(e);
-        setError(els.dashError, 'Could not sign out. Try again.');
-      }
-    }
-
-    els.signOut.addEventListener('click', doSignOut);
-    els.signOutTop.addEventListener('click', doSignOut);
-
     function initialsFromName(nameOrEmail) {
       const s = (nameOrEmail || '').trim();
       if (!s) return 'GT';
       const parts = s.split(/\s+/).filter(Boolean);
-      const init = parts.length >= 2 ? (parts[0][0] + parts[1][0]) : parts[0].slice(0,2);
+      const init =
+        parts.length >= 2 ? parts[0][0] + parts[1][0] : parts[0].slice(0, 2);
       return init.toUpperCase();
     }
 
@@ -473,33 +436,21 @@
       }
     }
 
-    function friendlyAuthError(e) {
-      const code = e?.code || '';
-      if (code.includes('auth/popup-closed-by-user')) return 'Popup closed before completing sign-in.';
-      if (code.includes('auth/cancelled-popup-request')) return 'Another sign-in popup is already open.';
-      if (code.includes('auth/popup-blocked')) return 'Popup was blocked. Please allow popups and try again.';
-      if (code.includes('auth/unauthorized-domain'))
-        return 'This domain is not authorized in Firebase Auth. Add it in Firebase Console → Auth → Settings → Authorized domains.';
-      return 'Sign-in failed. Please try again.';
+    function doSignOut() {
+      alert('Demo deployment: sign-in is simulated. You remain signed in for this PoC.');
     }
 
-    onAuthStateChanged(auth, async (user) => {
-      setError(els.authError, '');
-      if (els.dashError) setError(els.dashError, '');
+    renderTreeLinks();
+    setUserUI(DEMO_USER);
+    show(els.signedOutView, false);
+    show(els.signedInView, true);
+    show(els.signOutTop, true);
+    show(els.authError, false);
 
-      if (!user) {
-        show(els.signedOutView, true);
-        show(els.signedInView, false);
-        show(els.signOutTop, false);
-        return;
-      }
+    if (els.googleBtn) els.googleBtn.style.display = 'none';
 
-      show(els.signedOutView, false);
-      show(els.signedInView, true);
-      show(els.signOutTop, true);
-
-      setUserUI(user);
-    });
+    els.signOut.addEventListener('click', doSignOut);
+    els.signOutTop.addEventListener('click', doSignOut);
   </script>
 </body>
 </html>

@@ -72,3 +72,9 @@ rules.txt
 
 # Firebase service account (contains secrets)
 scripts/serviceAccountKey.json
+
+# Terraform (deploy/terraform)
+deploy/.terraform/
+deploy/*.tfstate
+deploy/*.tfstate.*
+deploy/terraform.tfvars

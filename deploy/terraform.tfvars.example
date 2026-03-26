@@ -1,0 +1,6 @@
+# Copy to terraform.tfvars and adjust.
+
+aws_region     = "us-east-1"
+instance_type  = "t2.micro"
+key_name       = "my-key-pair" # optional; leave "" if you do not need SSH
+repo_url       = "https://github.com/MyNameIs-Nigel/gratitree.git"

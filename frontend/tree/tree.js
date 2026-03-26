@@ -1,43 +1,65 @@
-// GratiTree — Tree view and entry form
-// Uses Firebase Auth + Firestore. Tree locks at midnight Mountain time (start of next day).
+// GratiTree — Tree view and entry form (PoC: no Firebase; in-memory session data + demo user)
 
-import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.8.1/firebase-app.js';
-import {
-  getAuth,
-  GoogleAuthProvider,
-  signInWithPopup,
-  signOut,
-  onAuthStateChanged,
-} from 'https://www.gstatic.com/firebasejs/10.8.1/firebase-auth.js';
-import {
-  getFirestore,
-  collection,
-  doc,
-  addDoc,
-  getDoc,
-  getDocs,
-  query,
-  where,
-  orderBy,
-  serverTimestamp,
-  onSnapshot,
-} from 'https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore.js';
-
-const firebaseConfig = {
-  apiKey: "AIzaSyAOksyrIIGh0ugEieJ1cK1B3Idl7qQyQyY",
-  authDomain: "gratitree.firebaseapp.com",
-  projectId: "gratitree",
-  storageBucket: "gratitree.firebasestorage.app",
-  messagingSenderId: "517473582832",
-  appId: "1:517473582832:web:886f25ecadf981b9d48c35",
-};
-
-const TZ = 'America/Denver'; // Mountain time
+const TZ = 'America/Denver';
 const MAX_ENTRIES_PER_DAY = 3;
 
-const app = initializeApp(firebaseConfig);
-const auth = getAuth(app);
-const db = getFirestore(app);
+/** Simulated signed-in user for static hosting PoC */
+const DEMO_USER = {
+  uid: 'demo-user',
+  displayName: 'Demo User',
+  email: 'demo@gratitree.local',
+};
+
+function mockTs(date) {
+  return {
+    toDate: () => date,
+    toMillis: () => date.getTime(),
+  };
+}
+
+let entryIdSeq = 1;
+function nextEntryId() {
+  return `local-${Date.now()}-${entryIdSeq++}`;
+}
+
+/** Per-day entries (session only); today is seeded once */
+const entriesByDay = new Map();
+
+function seedTodayIfNeeded(todayKey) {
+  if (entriesByDay.has(todayKey)) return;
+  const now = new Date();
+  entriesByDay.set(todayKey, [
+    {
+      id: nextEntryId(),
+      uid: DEMO_USER.uid,
+      text: 'Grateful for this demo deployment.',
+      name: 'Demo User',
+      anonymous: false,
+      parentId: null,
+      timestamp: mockTs(new Date(now.getFullYear(), now.getMonth(), now.getDate(), 8, 0)),
+    },
+    {
+      id: nextEntryId(),
+      uid: 'other-demo',
+      text: 'Happy to browse without Firebase.',
+      name: 'Visitor',
+      anonymous: false,
+      parentId: null,
+      timestamp: mockTs(new Date(now.getFullYear(), now.getMonth(), now.getDate(), 9, 30)),
+    },
+  ]);
+}
+
+function getEntries(dayId) {
+  const todayKey = formatDayKey(new Date());
+  if (dayId === todayKey) seedTodayIfNeeded(dayId);
+  if (!entriesByDay.has(dayId)) entriesByDay.set(dayId, []);
+  return entriesByDay.get(dayId);
+}
+
+function getUserEntryCount(dayId, uid) {
+  return getEntries(dayId).filter((e) => e.uid === uid).length;
+}
 
 // ---------------------------------------------------------------------------
 // Date / dayId helpers (Mountain time)
@@ -54,10 +76,8 @@ function formatDayKey(d) {
   return `${map.year}-${map.month}-${map.day}`;
 }
 
-// Midnight at the start of the *next* day in Mountain (when this day's tree locks)
 function midnightMountainAfterDay(dayId) {
   const [y, m, d] = dayId.split('-').map(Number);
-  // 07:00 UTC = midnight MST (next day), 06:00 UTC = midnight MDT; start with MST and adjust
   let utc = new Date(Date.UTC(y, m - 1, d + 1, 7, 0, 0, 0));
   const hour = parseInt(
     utc.toLocaleString('en-US', { timeZone: TZ, hour: 'numeric', hour12: false }),
@@ -123,7 +143,6 @@ const els = {
 };
 
 let currentDayId = null;
-let unsubscribeEntries = null;
 
 function setError(msg) {
   els.errorEl.textContent = msg || '';
@@ -245,10 +264,6 @@ function renderTree(entries) {
   }
 }
 
-// ---------------------------------------------------------------------------
-// Populate parent selector (only when we have entries — i.e. when tree is readable)
-// ---------------------------------------------------------------------------
-
 function fillParentSelect(entries) {
   els.parentSelect.innerHTML = '<option value="">— New root entry —</option>';
   const flat = [];
@@ -266,63 +281,30 @@ function fillParentSelect(entries) {
 }
 
 // ---------------------------------------------------------------------------
-// Fetch user's entry count for the day (while tree is open)
+// Refresh tree from in-memory store
 // ---------------------------------------------------------------------------
 
-async function getUserEntryCount(dayId, uid) {
-  const entriesRef = collection(db, 'trees', dayId, 'entries');
-  const q = query(
-    entriesRef,
-    where('uid', '==', uid)
-  );
-  const snap = await getDocs(q);
-  return snap.size;
-}
+function refreshEntries(dayId, user = null) {
+  const entries = getEntries(dayId);
+  renderTree(entries);
+  fillParentSelect(entries);
 
-// ---------------------------------------------------------------------------
-// Subscribe to entries for a day (only works when tree is closed)
-// ---------------------------------------------------------------------------
-
-function subscribeToEntries(dayId, user = null) {
-  if (unsubscribeEntries) unsubscribeEntries();
-
-  const entriesRef = collection(db, 'trees', dayId, 'entries');
-  const q = query(entriesRef, orderBy('timestamp', 'asc'));
-
-  unsubscribeEntries = onSnapshot(
-    q,
-    (snap) => {
-      const entries = snap.docs.map((d) => ({
-        id: d.id,
-        ...d.data(),
-        timestamp: d.data().timestamp,
-      }));
-      renderTree(entries);
-      fillParentSelect(entries);
-
-      // While tree is open, keep the form limit state in sync with live entry count
-      if (user && isTreeOpen(dayId)) {
-        const count = entries.filter((e) => e.uid === user.uid).length;
-        const atLimit = count >= MAX_ENTRIES_PER_DAY;
-        els.limitNotice.classList.toggle('hidden', !atLimit);
-        els.submitBtn.disabled = atLimit;
-        els.entryForm.querySelectorAll('input, textarea, select').forEach((el) => {
-          el.disabled = atLimit;
-        });
-      }
-    },
-    (err) => {
-      console.error(err);
-      setError(`Could not load tree: ${err.message}`);
-    }
-  );
+  if (user && isTreeOpen(dayId)) {
+    const count = entries.filter((e) => e.uid === user.uid).length;
+    const atLimit = count >= MAX_ENTRIES_PER_DAY;
+    els.limitNotice.classList.toggle('hidden', !atLimit);
+    els.submitBtn.disabled = atLimit;
+    els.entryForm.querySelectorAll('input, textarea, select').forEach((el) => {
+      el.disabled = atLimit;
+    });
+  }
 }
 
 // ---------------------------------------------------------------------------
 // Switch day and update UI
 // ---------------------------------------------------------------------------
 
-async function switchDay(dayId, user) {
+function switchDay(dayId, user) {
   currentDayId = dayId;
   setDayInUrl(dayId);
   setError('');
@@ -332,9 +314,8 @@ async function switchDay(dayId, user) {
   const opt = dayOpts.find((o) => o.key === dayId);
 
   els.treeTitle.textContent = opt?.label || dayId;
-  els.treeSubtitle.textContent = `${dayId} • ${open ? 'Accepting entries until midnight Mountain' : 'Locked (read-only)'}`;
+  els.treeSubtitle.textContent = `${dayId} • ${open ? 'Accepting entries until midnight Mountain (demo — session only)' : 'Locked (read-only)'}`;
 
-  // Day picker
   els.dayPicker.innerHTML = '';
   for (const o of dayOpts) {
     const btn = document.createElement('button');
@@ -353,13 +334,11 @@ async function switchDay(dayId, user) {
       els.entryFormSection.classList.remove('hidden');
       els.signInPrompt.classList.add('hidden');
       els.treeSection.classList.remove('hidden');
-      subscribeToEntries(dayId, user);
+      refreshEntries(dayId, user);
     } else {
       els.treeSection.classList.add('hidden');
       els.entryFormSection.classList.add('hidden');
       els.signInPrompt.classList.remove('hidden');
-      unsubscribeEntries?.();
-      unsubscribeEntries = null;
     }
   } else {
     els.openNotice.classList.add('hidden');
@@ -367,7 +346,7 @@ async function switchDay(dayId, user) {
     els.entryFormSection.classList.add('hidden');
     els.signInPrompt.classList.add('hidden');
     els.treeSection.classList.remove('hidden');
-    subscribeToEntries(dayId);
+    refreshEntries(dayId);
   }
 }
 
@@ -375,10 +354,10 @@ async function switchDay(dayId, user) {
 // Submit entry
 // ---------------------------------------------------------------------------
 
-els.entryForm.addEventListener('submit', async (e) => {
+els.entryForm.addEventListener('submit', (e) => {
   e.preventDefault();
-  const user = auth.currentUser;
-  if (!user || !currentDayId) return;
+  const user = DEMO_USER;
+  if (!currentDayId) return;
 
   const text = els.entryText.value.trim();
   if (!text) return;
@@ -388,7 +367,7 @@ els.entryForm.addEventListener('submit', async (e) => {
     return;
   }
 
-  const count = await getUserEntryCount(currentDayId, user.uid);
+  const count = getUserEntryCount(currentDayId, user.uid);
   if (count >= MAX_ENTRIES_PER_DAY) {
     setError('You\'ve reached the limit of 3 entries for today.');
     return;
@@ -400,35 +379,33 @@ els.entryForm.addEventListener('submit', async (e) => {
   const parentVal = els.parentSelect.value;
   const parentId = parentVal || null;
 
-  try {
-    await addDoc(collection(db, 'trees', currentDayId, 'entries'), {
-      uid: user.uid,
-      timestamp: serverTimestamp(),
-      name: els.entryName.value.trim() || null,
-      text,
-      anonymous: els.entryAnonymous.checked,
-      parentId,
+  const list = getEntries(currentDayId);
+  list.push({
+    id: nextEntryId(),
+    uid: user.uid,
+    timestamp: mockTs(new Date()),
+    name: els.entryName.value.trim() || null,
+    text,
+    anonymous: els.entryAnonymous.checked,
+    parentId,
+  });
+
+  els.entryText.value = '';
+  els.entryName.value = '';
+  els.entryAnonymous.checked = false;
+  els.parentSelect.selectedIndex = 0;
+  updateCharCount();
+
+  refreshEntries(currentDayId, user);
+
+  const newCount = count + 1;
+  if (newCount >= MAX_ENTRIES_PER_DAY) {
+    els.limitNotice.classList.remove('hidden');
+    els.submitBtn.disabled = true;
+    els.entryForm.querySelectorAll('input, textarea, select').forEach((el) => {
+      el.disabled = true;
     });
-
-    els.entryText.value = '';
-    els.entryName.value = '';
-    els.entryAnonymous.checked = false;
-    els.parentSelect.selectedIndex = 0;
-    updateCharCount();
-
-    const newCount = count + 1;
-    if (newCount >= MAX_ENTRIES_PER_DAY) {
-      els.limitNotice.classList.remove('hidden');
-      els.submitBtn.disabled = true;
-      els.entryForm.querySelectorAll('input, textarea, select').forEach((el) => {
-        el.disabled = true;
-      });
-    } else {
-      els.submitBtn.disabled = false;
-    }
-  } catch (err) {
-    console.error(err);
-    setError(`Could not save: ${err.message}`);
+  } else {
     els.submitBtn.disabled = false;
   }
 });
@@ -442,28 +419,19 @@ function updateCharCount() {
 els.entryText.addEventListener('input', updateCharCount);
 
 // ---------------------------------------------------------------------------
-// Auth
+// Auth (demo: always signed in; sign out is informational)
 // ---------------------------------------------------------------------------
 
-els.signOutBtn.addEventListener('click', async () => {
-  try {
-    await signOut(auth);
-  } catch (err) {
-    console.error(err);
-    setError('Could not sign out.');
-  }
+els.signOutBtn.addEventListener('click', () => {
+  alert('Demo deployment: sign-in is simulated. Your session stays active for this PoC.');
 });
 
-onAuthStateChanged(auth, (user) => {
-  if (user) {
-    els.userSpan.textContent = user.displayName || user.email || '';
-    els.userSpan.classList.remove('hidden');
-    els.signOutBtn.classList.remove('hidden');
-  } else {
-    els.userSpan.classList.add('hidden');
-    els.signOutBtn.classList.add('hidden');
-  }
-
+function applyDemoUser() {
+  els.userSpan.textContent = DEMO_USER.displayName || DEMO_USER.email || '';
+  els.userSpan.classList.remove('hidden');
+  els.signOutBtn.classList.remove('hidden');
   const dayId = getDayFromUrl();
-  switchDay(dayId, user);
-});
+  switchDay(dayId, DEMO_USER);
+}
+
+applyDemoUser();
