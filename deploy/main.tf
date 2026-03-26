@@ -1,3 +1,48 @@
+terraform {
+  required_version = ">= 1.0"
+
+  required_providers {
+    aws = {
+      source  = "hashicorp/aws"
+      version = "~> 5.0"
+    }
+  }
+}
+
+provider "aws" {
+  region = var.aws_region
+}
+
+variable "aws_region" {
+  description = "AWS region for the EC2 instance"
+  type        = string
+  default     = "us-east-1"
+}
+
+variable "instance_type" {
+  description = "EC2 instance type (e.g. t2.micro for free tier)"
+  type        = string
+  default     = "t2.micro"
+}
+
+variable "key_name" {
+  description = "Optional name of an existing EC2 Key Pair for SSH access"
+  type        = string
+  default     = ""
+}
+
+variable "repo_url" {
+  description = "Public git URL to clone (must contain frontend/)"
+  type        = string
+  default     = "https://github.com/MyNameIs-Nigel/gratitree.git"
+}
+
+variable "repo_branch" {
+  description = "Git branch to clone (shallow clone)"
+  type        = string
+  default     = "terraform"
+}
+
 data "aws_ami" "ubuntu" {
   most_recent = true
   owners      = ["099720109477"] # Canonical
@@ -49,7 +94,6 @@ resource "aws_instance" "gratitree" {
   ami                    = data.aws_ami.ubuntu.id
   instance_type          = var.instance_type
   vpc_security_group_ids = [aws_security_group.gratitree_web.id]
-  # Prepend repo URL/branch so setup.sh matches Terraform variables; strip duplicate shebang from file.
   user_data = <<-EOT
 #!/bin/bash
 export GRATITREE_REPO_URL="${var.repo_url}"
@@ -63,4 +107,19 @@ EOT
   tags = {
     Name = "gratitree-static"
   }
+}
+
+output "public_ip" {
+  description = "Public IPv4 address of the GratiTree EC2 instance"
+  value       = aws_instance.gratitree.public_ip
+}
+
+output "public_dns" {
+  description = "Public DNS name of the instance"
+  value       = aws_instance.gratitree.public_dns
+}
+
+output "http_url" {
+  description = "Base URL for the static site"
+  value       = "http://${aws_instance.gratitree.public_ip}"
 }
