@@ -21,3 +21,9 @@ variable "repo_url" {
   type        = string
   default     = "https://github.com/MyNameIs-Nigel/gratitree.git"
 }
+
+variable "repo_branch" {
+  description = "Git branch to clone (shallow clone)"
+  type        = string
+  default     = "terraform"
+}

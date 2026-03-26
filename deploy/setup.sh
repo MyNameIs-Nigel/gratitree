@@ -6,6 +6,7 @@ set -euo pipefail
 export DEBIAN_FRONTEND=noninteractive
 
 REPO_URL="${GRATITREE_REPO_URL:-https://github.com/MyNameIs-Nigel/gratitree.git}"
+REPO_BRANCH="${GRATITREE_REPO_BRANCH:-terraform}"
 CLONE_DIR="${GRATITREE_CLONE_DIR:-/tmp/gratitree}"
 WEB_ROOT="${GRATITREE_WEB_ROOT:-/var/www/html}"
 
@@ -13,7 +14,7 @@ apt-get update -y
 apt-get install -y apache2 git
 
 rm -rf "${CLONE_DIR}"
-git clone --depth 1 "${REPO_URL}" "${CLONE_DIR}"
+git clone --depth 1 --branch "${REPO_BRANCH}" --single-branch "${REPO_URL}" "${CLONE_DIR}"
 
 rm -rf "${WEB_ROOT:?}"/*
 cp -a "${CLONE_DIR}/frontend/." "${WEB_ROOT}/"
@@ -38,4 +39,4 @@ a2enconf gratitree-static
 systemctl enable apache2
 systemctl restart apache2
 
-echo "GratiTree static site deployed to ${WEB_ROOT}"
+echo "GratiTree static site deployed to ${WEB_ROOT} (branch: ${REPO_BRANCH})"

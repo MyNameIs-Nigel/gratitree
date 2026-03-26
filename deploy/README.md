@@ -27,7 +27,9 @@ Open the `http_url` output in a browser (HTTP port 80).
 To run the same steps on an existing Ubuntu host (or to test without Terraform), use [`setup.sh`](./setup.sh):
 
 ```bash
-sudo GRATITREE_REPO_URL=https://github.com/MyNameIs-Nigel/gratitree.git bash setup.sh
+sudo GRATITREE_REPO_URL=https://github.com/MyNameIs-Nigel/gratitree.git \
+  GRATITREE_REPO_BRANCH=terraform \
+  bash setup.sh
 ```
 
 Environment variables:
@@ -35,8 +37,11 @@ Environment variables:
 | Variable | Default | Description |
 |----------|---------|-------------|
 | `GRATITREE_REPO_URL` | GitHub URL | Repository to clone |
+| `GRATITREE_REPO_BRANCH` | `terraform` | Branch to check out (`git clone --branch`) |
 | `GRATITREE_CLONE_DIR` | `/tmp/gratitree` | Clone path |
 | `GRATITREE_WEB_ROOT` | `/var/www/html` | Apache document root |
+
+Terraform variable `repo_branch` (default `terraform`) sets `GRATITREE_REPO_BRANCH` in EC2 user-data.
 
 ## Security note
 

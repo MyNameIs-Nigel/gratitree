@@ -49,10 +49,11 @@ resource "aws_instance" "gratitree" {
   ami                    = data.aws_ami.ubuntu.id
   instance_type          = var.instance_type
   vpc_security_group_ids = [aws_security_group.gratitree_web.id]
-  # Prepend repo URL so setup.sh matches var.repo_url; strip duplicate shebang from file.
+  # Prepend repo URL/branch so setup.sh matches Terraform variables; strip duplicate shebang from file.
   user_data = <<-EOT
 #!/bin/bash
 export GRATITREE_REPO_URL="${var.repo_url}"
+export GRATITREE_REPO_BRANCH="${var.repo_branch}"
 ${trimspace(regexreplace(file("${path.module}/setup.sh"), "^#!.*\n", ""))}
 EOT
   user_data_replace_on_change = true
