@@ -273,7 +273,8 @@ async function getUserEntryCount(dayId, uid) {
   const entriesRef = collection(db, 'trees', dayId, 'entries');
   const q = query(
     entriesRef,
-    where('uid', '==', uid)
+    where('uid', '==', uid),
+    where('parentId', '==', null)
   );
   const snap = await getDocs(q);
   return snap.size;
@@ -302,7 +303,7 @@ function subscribeToEntries(dayId, user = null) {
 
       // While tree is open, keep the form limit state in sync with live entry count
       if (user && isTreeOpen(dayId)) {
-        const count = entries.filter((e) => e.uid === user.uid).length;
+        const count = entries.filter((e) => e.uid === user.uid && !e.parentId).length;
         const atLimit = count >= MAX_ENTRIES_PER_DAY;
         els.limitNotice.classList.toggle('hidden', !atLimit);
         els.submitBtn.disabled = atLimit;
@@ -388,17 +389,19 @@ els.entryForm.addEventListener('submit', async (e) => {
     return;
   }
 
-  const count = await getUserEntryCount(currentDayId, user.uid);
-  if (count >= MAX_ENTRIES_PER_DAY) {
-    setError('You\'ve reached the limit of 3 entries for today.');
-    return;
+  const parentVal = els.parentSelect.value;
+  const parentId = parentVal || null;
+
+  if (!parentId) {
+    const count = await getUserEntryCount(currentDayId, user.uid);
+    if (count >= MAX_ENTRIES_PER_DAY) {
+      setError('You\'ve reached the limit of 3 root entries for today. Replies are still allowed.');
+      return;
+    }
   }
 
   setError('');
   els.submitBtn.disabled = true;
-
-  const parentVal = els.parentSelect.value;
-  const parentId = parentVal || null;
 
   try {
     await addDoc(collection(db, 'trees', currentDayId, 'entries'), {
