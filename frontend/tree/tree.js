@@ -306,11 +306,20 @@ function subscribeToEntries(dayId, user = null) {
         const rootCount = entries.filter((e) => e.uid === user.uid && !e.parentId).length;
         const atLimit = rootCount >= MAX_ENTRIES_PER_DAY;
         els.limitNotice.classList.toggle('hidden', !atLimit);
-        // Let users continue to reply even after root limit is reached.
+
+        const rootOption = els.parentSelect.querySelector('option[value=""]');
+        if (rootOption) rootOption.disabled = atLimit;
+
+        // Keep the entire form enabled so replies can still be selected/submitted.
         els.submitBtn.disabled = false;
         els.entryForm.querySelectorAll('input, textarea, select').forEach((el) => {
           el.disabled = false;
         });
+
+        // If roots are blocked and current form is still pointing at root, default to first reply target.
+        if (atLimit && els.parentSelect.value === '' && els.parentSelect.options.length > 1) {
+          els.parentSelect.selectedIndex = 1;
+        }
       }
     },
     (err) => {
