@@ -303,12 +303,13 @@ function subscribeToEntries(dayId, user = null) {
 
       // While tree is open, keep the form limit state in sync with live entry count
       if (user && isTreeOpen(dayId)) {
-        const count = entries.filter((e) => e.uid === user.uid && !e.parentId).length;
-        const atLimit = count >= MAX_ENTRIES_PER_DAY;
+        const rootCount = entries.filter((e) => e.uid === user.uid && !e.parentId).length;
+        const atLimit = rootCount >= MAX_ENTRIES_PER_DAY;
         els.limitNotice.classList.toggle('hidden', !atLimit);
-        els.submitBtn.disabled = atLimit;
+        // Let users continue to reply even after root limit is reached.
+        els.submitBtn.disabled = false;
         els.entryForm.querySelectorAll('input, textarea, select').forEach((el) => {
-          el.disabled = atLimit;
+          el.disabled = false;
         });
       }
     },
@@ -392,9 +393,10 @@ els.entryForm.addEventListener('submit', async (e) => {
   const parentVal = els.parentSelect.value;
   const parentId = parentVal || null;
 
+  let rootCount = null;
   if (!parentId) {
-    const count = await getUserEntryCount(currentDayId, user.uid);
-    if (count >= MAX_ENTRIES_PER_DAY) {
+    rootCount = await getUserEntryCount(currentDayId, user.uid);
+    if (rootCount >= MAX_ENTRIES_PER_DAY) {
       setError('You\'ve reached the limit of 3 root entries for today. Replies are still allowed.');
       return;
     }
@@ -419,16 +421,16 @@ els.entryForm.addEventListener('submit', async (e) => {
     els.parentSelect.selectedIndex = 0;
     updateCharCount();
 
-    const newCount = count + 1;
-    if (newCount >= MAX_ENTRIES_PER_DAY) {
+    // If we hit root limit, show notice; keep form active for replies.
+    if (rootCount !== null && rootCount + 1 >= MAX_ENTRIES_PER_DAY) {
       els.limitNotice.classList.remove('hidden');
-      els.submitBtn.disabled = true;
-      els.entryForm.querySelectorAll('input, textarea, select').forEach((el) => {
-        el.disabled = true;
-      });
     } else {
-      els.submitBtn.disabled = false;
+      els.limitNotice.classList.add('hidden');
     }
+    els.submitBtn.disabled = false;
+    els.entryForm.querySelectorAll('input, textarea, select').forEach((el) => {
+      el.disabled = false;
+    });
   } catch (err) {
     console.error(err);
     setError(`Could not save: ${err.message}`);
